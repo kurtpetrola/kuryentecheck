@@ -39,6 +39,11 @@ class ReportService {
       'timestamp': FieldValue.serverTimestamp(),
       'upvotes': 0,
     });
+
+    // Increment user's report count
+    await _firestore.collection('users').doc(user.uid).update({
+      'reportsSubmitted': FieldValue.increment(1),
+    });
   }
 
   // Get stream of reports ordered by newest first

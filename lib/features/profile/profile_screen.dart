@@ -154,7 +154,8 @@ class ProfileScreen extends ConsumerWidget {
                             _InfoRow(
                               icon: LucideIcons.fileText,
                               label: 'Reports Submitted:',
-                              value: '0', // TODO: Connect to real count
+                              value: (data?['reportsSubmitted'] ?? 0)
+                                  .toString(),
                             ),
                           ],
                         ),
