@@ -14,7 +14,39 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
   String? _selectedIssue;
   final _notesController = TextEditingController();
 
-  final List<String> _barangays = ['Poblacion', 'Macayug', 'Bantayan'];
+  final List<String> _barangays = [
+    'Alitaya',
+    'Amansabina',
+    'Anolid',
+    'Banaoang',
+    'Bantayan',
+    'Bari',
+    'Bateng',
+    'Buenlag',
+    'David',
+    'Embarcadero',
+    'Gueguesangen',
+    'Guesang',
+    'Guiguilonen',
+    'Guilig',
+    'Inlambo',
+    'Lanas',
+    'Landas',
+    'Maasin',
+    'Macayug',
+    'Malabago',
+    'Merano',
+    'Navaluan',
+    'Nibaliw',
+    'Osiem',
+    'Palua',
+    'Poblacion',
+    'Pogo',
+    'Salaan',
+    'Salapingao',
+    'Talogtog',
+    'Tebag',
+  ];
 
   @override
   void dispose() {

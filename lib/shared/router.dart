@@ -9,6 +9,7 @@ import '../features/feed/feed_screen.dart';
 import '../features/profile/profile_screen.dart';
 import '../features/auth/login_screen.dart';
 import '../features/auth/register_screen.dart';
+import '../features/auth/forgot_password_screen.dart';
 import '../services/auth_service.dart';
 import 'scaffold_with_navbar.dart';
 import 'onboarding_screen.dart';
@@ -26,7 +27,8 @@ final routerProvider = Provider<GoRouter>((ref) {
       final isLoggedIn = authState.value != null;
       final isLoggingIn =
           state.uri.toString() == '/login' ||
-          state.uri.toString() == '/register';
+          state.uri.toString() == '/register' ||
+          state.uri.toString() == '/forgot-password';
 
       // 1. Onboarding Check
       if (!hasSeenOnboarding) {
@@ -62,6 +64,10 @@ final routerProvider = Provider<GoRouter>((ref) {
       GoRoute(
         path: '/register',
         builder: (context, state) => const RegisterScreen(),
+      ),
+      GoRoute(
+        path: '/forgot-password',
+        builder: (context, state) => const ForgotPasswordScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
