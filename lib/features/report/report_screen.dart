@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+
+import '../../services/report_service.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -54,7 +57,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     super.dispose();
   }
 
-  void _submitReport() {
+  Future<void> _submitReport() async {
     if (_selectedBarangay == null || _selectedIssue == null) {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(content: Text('Please fill in all required fields')),
@@ -62,19 +65,39 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
       return;
     }
 
-    // Mock submission
-    ScaffoldMessenger.of(context).showSnackBar(
-      const SnackBar(
-        content: Text('Report submitted successfully!'),
-        backgroundColor: Colors.green,
-      ),
-    );
-    // Reset form?
-    setState(() {
-      _selectedBarangay = null;
-      _selectedIssue = null;
-      _notesController.clear();
-    });
+    try {
+      await ref
+          .read(reportServiceProvider)
+          .addReport(
+            barangay: _selectedBarangay!,
+            issueType: _selectedIssue!,
+            notes: _notesController.text.trim(),
+          );
+
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+            content: Text('Report submitted successfully!'),
+            backgroundColor: Color(0xFF0F4C45),
+          ),
+        );
+        // Reset form
+        setState(() {
+          _selectedBarangay = null;
+          _selectedIssue = null;
+          _notesController.clear();
+        });
+      }
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+            content: Text('Error submitting report: $e'),
+            backgroundColor: Colors.red,
+          ),
+        );
+      }
+    }
   }
 
   @override
@@ -180,9 +203,17 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             const SizedBox(height: 8),
             Row(
               children: [
-                _InfoChip(icon: LucideIcons.clock, label: '08:10 PM'),
+                _InfoChip(
+                  icon: LucideIcons.clock,
+                  label: DateFormat.jm().format(DateTime.now()),
+                ),
                 const SizedBox(width: 8),
-                _InfoChip(icon: LucideIcons.mapPin, label: 'Location detected'),
+                _InfoChip(
+                  icon: LucideIcons.mapPin,
+                  label: _selectedBarangay != null
+                      ? 'Barangay $_selectedBarangay'
+                      : 'Location not set',
+                ),
               ],
             ),
             const SizedBox(height: 32),
