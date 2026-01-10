@@ -1,11 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-class FeedScreen extends StatelessWidget {
+import '../../services/report_service.dart';
+
+class FeedScreen extends ConsumerWidget {
   const FeedScreen({super.key});
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final reportsAsync = ref.watch(reportStreamProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
@@ -55,48 +61,75 @@ class FeedScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            child: ListView(
-              padding: const EdgeInsets.symmetric(horizontal: 16),
-              children: const [
-                _FeedCard(
-                  barangay: 'Poblacion',
-                  timeAgo: '15 minutes ago',
-                  issueTitle: 'Total Blackout',
-                  issueIcon: LucideIcons.zapOff,
-                  issueColor: Colors
-                      .blue, // Screenshot shows dark blue/black for total blackout
-                  description:
-                      'Power out since 2pm. Whole street affected. Multiple households reporting the same issue.',
-                  status: 'Pending',
-                  statusColor: Colors.orange,
-                  upvotes: 8,
-                ),
-                SizedBox(height: 16),
-                _FeedCard(
-                  barangay: 'Macayug',
-                  timeAgo: 'about 2 hours ago',
-                  issueTitle: 'Low Voltage',
-                  issueIcon: LucideIcons.activity,
-                  issueColor: Colors.blue,
-                  description:
-                      'Lights are very dim, appliances not working properly. Refrigerator stopped working.',
-                  status: 'Acknowledged',
-                  statusColor: Colors.blue,
-                  upvotes: 3,
-                ),
-                SizedBox(height: 16),
-                _FeedCard(
-                  barangay: 'Bantayan',
-                  timeAgo: 'about 5 hours ago',
-                  issueTitle: 'Flickering Lights',
-                  issueIcon: LucideIcons.zap,
-                  issueColor: Colors.blue,
-                  description: 'Lights flickering intermittently.',
-                  status: 'Resolved',
-                  statusColor: Colors.green,
-                  upvotes: 12,
-                ),
-              ],
+            child: reportsAsync.when(
+              data: (snapshot) {
+                if (snapshot.docs.isEmpty) {
+                  return const Center(child: Text('No reports yet.'));
+                }
+                return ListView.builder(
+                  padding: const EdgeInsets.symmetric(horizontal: 16),
+                  itemCount: snapshot.docs.length,
+                  itemBuilder: (context, index) {
+                    final data =
+                        snapshot.docs[index].data() as Map<String, dynamic>;
+
+                    // Basic time ago logic
+                    final timestamp = data['timestamp'] as Timestamp?;
+                    String timeAgoStr = 'Just now';
+                    if (timestamp != null) {
+                      final diff = DateTime.now().difference(
+                        timestamp.toDate(),
+                      );
+                      if (diff.inMinutes < 60) {
+                        timeAgoStr = '${diff.inMinutes}m ago';
+                      } else if (diff.inHours < 24) {
+                        timeAgoStr = '${diff.inHours}h ago';
+                      } else {
+                        timeAgoStr = '${diff.inDays}d ago';
+                      }
+                    }
+
+                    // Map issue type to icon and color
+                    IconData icon = LucideIcons.alertCircle;
+                    Color color = Colors.grey;
+
+                    final issueType = data['issueType'] as String? ?? 'Unknown';
+
+                    if (issueType == 'Total Blackout') {
+                      icon = LucideIcons.zapOff;
+                      color = Colors.red;
+                    } else if (issueType == 'Low Voltage') {
+                      icon = LucideIcons.activity;
+                      color = Colors.orange;
+                    } else if (issueType == 'Flickering Lights') {
+                      icon = LucideIcons.zap;
+                      color = Colors.amber;
+                    }
+
+                    return Padding(
+                      padding: const EdgeInsets.only(bottom: 16),
+                      child: _FeedCard(
+                        barangay: data['barangay'] ?? 'Unknown',
+                        timeAgo: timeAgoStr,
+                        issueTitle: issueType,
+                        issueIcon: icon,
+                        issueColor: color,
+                        description:
+                            data['notes'] ?? 'No description provided.',
+                        status: data['status'] ?? 'Pending',
+                        statusColor: (data['status'] == 'Resolved')
+                            ? Colors.green
+                            : ((data['status'] == 'Acknowledged')
+                                  ? Colors.blue
+                                  : Colors.orange),
+                        upvotes: data['upvotes'] ?? 0,
+                      ),
+                    );
+                  },
+                );
+              },
+              loading: () => const Center(child: CircularProgressIndicator()),
+              error: (err, stack) => Center(child: Text('Error: $err')),
             ),
           ),
         ],
