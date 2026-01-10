@@ -7,10 +7,14 @@ import '../features/report/report_screen.dart';
 import '../features/map/map_screen.dart';
 import '../features/feed/feed_screen.dart';
 import '../features/profile/profile_screen.dart';
+import '../features/auth/login_screen.dart';
+import '../features/auth/register_screen.dart';
+import '../services/auth_service.dart';
 import 'scaffold_with_navbar.dart';
 import 'onboarding_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
+  final authState = ref.watch(authStateProvider);
   final rootNavigatorKey = GlobalKey<NavigatorState>();
 
   return GoRouter(
@@ -19,19 +23,45 @@ final routerProvider = Provider<GoRouter>((ref) {
     redirect: (context, state) async {
       final prefs = await SharedPreferences.getInstance();
       final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
+      final isLoggedIn = authState.value != null;
+      final isLoggingIn =
+          state.uri.toString() == '/login' ||
+          state.uri.toString() == '/register';
 
-      // Avoid redirecting if already on the onboarding screen
+      // 1. Onboarding Check
       if (!hasSeenOnboarding) {
-        if (state.matchedLocation != '/onboarding') {
+        if (state.uri.toString() != '/onboarding') {
           return '/onboarding';
         }
+        return null; // Let them stay on onboarding
       }
+
+      // 2. Auth Check
+      if (!isLoggedIn && !isLoggingIn) {
+        // If not logged in and trying to access a protected route, go to login
+        // But only if we are NOT on onboarding (which is handled above)
+        if (state.uri.toString() != '/onboarding') {
+          return '/login';
+        }
+      }
+
+      // 3. Login Redirect
+      if (isLoggedIn && isLoggingIn) {
+        // If logged in but on login/register page, go to home
+        return '/report';
+      }
+
       return null;
     },
     routes: [
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
+      ),
+      GoRoute(path: '/login', builder: (context, state) => const LoginScreen()),
+      GoRoute(
+        path: '/register',
+        builder: (context, state) => const RegisterScreen(),
       ),
       StatefulShellRoute.indexedStack(
         builder: (context, state, navigationShell) {
