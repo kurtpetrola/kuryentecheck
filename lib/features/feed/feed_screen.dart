@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../services/auth_service.dart';
 import '../../services/report_service.dart';
 
 class FeedScreen extends ConsumerWidget {
@@ -11,6 +12,7 @@ class FeedScreen extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final reportsAsync = ref.watch(reportStreamProvider);
+    final currentUser = ref.watch(authServiceProvider).currentUser;
 
     return Scaffold(
       appBar: AppBar(
@@ -70,8 +72,8 @@ class FeedScreen extends ConsumerWidget {
                   padding: const EdgeInsets.symmetric(horizontal: 16),
                   itemCount: snapshot.docs.length,
                   itemBuilder: (context, index) {
-                    final data =
-                        snapshot.docs[index].data() as Map<String, dynamic>;
+                    final doc = snapshot.docs[index];
+                    final data = doc.data() as Map<String, dynamic>;
 
                     // Basic time ago logic
                     final timestamp = data['timestamp'] as Timestamp?;
@@ -106,6 +108,11 @@ class FeedScreen extends ConsumerWidget {
                       color = Colors.amber;
                     }
 
+                    final likedBy = List<String>.from(data['likedBy'] ?? []);
+                    final isLiked =
+                        currentUser != null &&
+                        likedBy.contains(currentUser.uid);
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: _FeedCard(
@@ -123,6 +130,10 @@ class FeedScreen extends ConsumerWidget {
                                   ? Colors.blue
                                   : Colors.orange),
                         upvotes: data['upvotes'] ?? 0,
+                        isLiked: isLiked,
+                        onUpvote: () {
+                          ref.read(reportServiceProvider).toggleUpvote(doc.id);
+                        },
                       ),
                     );
                   },
@@ -148,6 +159,8 @@ class _FeedCard extends StatelessWidget {
   final String status;
   final Color statusColor;
   final int upvotes;
+  final bool isLiked;
+  final VoidCallback onUpvote;
 
   const _FeedCard({
     required this.barangay,
@@ -159,6 +172,8 @@ class _FeedCard extends StatelessWidget {
     required this.status,
     required this.statusColor,
     required this.upvotes,
+    required this.isLiked,
+    required this.onUpvote,
   });
 
   @override
@@ -234,22 +249,26 @@ class _FeedCard extends StatelessWidget {
                   ),
                 ),
               ),
-              Row(
-                children: [
-                  const Icon(
-                    LucideIcons.thumbsUp,
-                    size: 16,
-                    color: Colors.grey,
-                  ),
-                  const SizedBox(width: 4),
-                  Text(
-                    upvotes.toString(),
-                    style: const TextStyle(
-                      color: Colors.grey,
-                      fontWeight: FontWeight.bold,
+              GestureDetector(
+                onTap: onUpvote,
+                behavior: HitTestBehavior.opaque,
+                child: Row(
+                  children: [
+                    Icon(
+                      LucideIcons.thumbsUp,
+                      size: 20,
+                      color: isLiked ? const Color(0xFF0F4C45) : Colors.grey,
                     ),
-                  ),
-                ],
+                    const SizedBox(width: 4),
+                    Text(
+                      upvotes.toString(),
+                      style: TextStyle(
+                        color: isLiked ? const Color(0xFF0F4C45) : Colors.grey,
+                        fontWeight: FontWeight.bold,
+                      ),
+                    ),
+                  ],
+                ),
               ),
             ],
           ),
