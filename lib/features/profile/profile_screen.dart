@@ -27,7 +27,38 @@ class ProfileScreen extends ConsumerWidget {
             icon: const Icon(LucideIcons.logOut),
             tooltip: 'Sign Out',
             onPressed: () {
-              ref.read(authServiceProvider).signOut();
+              showDialog(
+                context: context,
+                builder: (context) => AlertDialog(
+                  title: const Text(
+                    'Sign Out',
+                    style: TextStyle(fontWeight: FontWeight.bold),
+                  ),
+                  content: const Text('Are you sure you want to sign out?'),
+                  actions: [
+                    TextButton(
+                      onPressed: () => Navigator.pop(context),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(color: Colors.grey),
+                      ),
+                    ),
+                    TextButton(
+                      onPressed: () {
+                        Navigator.pop(context);
+                        ref.read(authServiceProvider).signOut();
+                      },
+                      child: const Text(
+                        'Sign Out',
+                        style: TextStyle(
+                          color: Color(0xFF0F4C45),
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              );
             },
           ),
         ],
