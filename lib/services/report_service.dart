@@ -38,12 +38,41 @@ class ReportService {
       'status': 'Pending', // Pending, Acknowledged, Resolved
       'timestamp': FieldValue.serverTimestamp(),
       'upvotes': 0,
+      'likedBy': [],
     });
 
     // Increment user's report count
     await _firestore.collection('users').doc(user.uid).update({
       'reportsSubmitted': FieldValue.increment(1),
     });
+  }
+
+  // Toggle upvote on a report
+  Future<void> toggleUpvote(String reportId) async {
+    final user = _ref.read(authServiceProvider).currentUser;
+    if (user == null) return;
+
+    final reportRef = _reports.doc(reportId);
+    final reportDoc = await reportRef.get();
+
+    if (!reportDoc.exists) return;
+
+    final data = reportDoc.data() as Map<String, dynamic>;
+    final likedBy = List<String>.from(data['likedBy'] ?? []);
+
+    if (likedBy.contains(user.uid)) {
+      // Remove upvote
+      await reportRef.update({
+        'likedBy': FieldValue.arrayRemove([user.uid]),
+        'upvotes': FieldValue.increment(-1),
+      });
+    } else {
+      // Add upvote
+      await reportRef.update({
+        'likedBy': FieldValue.arrayUnion([user.uid]),
+        'upvotes': FieldValue.increment(1),
+      });
+    }
   }
 
   // Get stream of reports ordered by newest first
