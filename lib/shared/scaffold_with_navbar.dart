@@ -1,14 +1,19 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
+import '../services/language_provider.dart';
+import '../shared/app_strings.dart';
 
-class ScaffoldWithNavBar extends StatelessWidget {
+class ScaffoldWithNavBar extends ConsumerWidget {
   const ScaffoldWithNavBar({required this.navigationShell, super.key});
 
   final StatefulNavigationShell navigationShell;
 
   @override
-  Widget build(BuildContext context) {
+  Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(languageProvider);
+
     return Scaffold(
       body: navigationShell,
       bottomNavigationBar: NavigationBarTheme(
@@ -40,19 +45,22 @@ class ScaffoldWithNavBar extends StatelessWidget {
             );
           },
           backgroundColor: Colors.white,
-          destinations: const [
+          destinations: [
             NavigationDestination(
-              icon: Icon(LucideIcons.home),
-              label: 'Report',
-            ),
-            NavigationDestination(icon: Icon(LucideIcons.mapPin), label: 'Map'),
-            NavigationDestination(
-              icon: Icon(LucideIcons.fileText),
-              label: 'Feed',
+              icon: const Icon(LucideIcons.home),
+              label: AppStrings.tr('nav_report', locale),
             ),
             NavigationDestination(
-              icon: Icon(LucideIcons.user),
-              label: 'Profile',
+              icon: const Icon(LucideIcons.mapPin),
+              label: AppStrings.tr('nav_map', locale),
+            ),
+            NavigationDestination(
+              icon: const Icon(LucideIcons.fileText),
+              label: AppStrings.tr('nav_feed', locale),
+            ),
+            NavigationDestination(
+              icon: const Icon(LucideIcons.user),
+              label: AppStrings.tr('nav_profile', locale),
             ),
           ],
         ),

@@ -3,6 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 import '../../services/auth_service.dart';
+import '../../services/language_provider.dart';
+import '../../shared/app_strings.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -11,15 +13,19 @@ class ProfileScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final authState = ref.watch(authStateProvider);
     final user = authState.value;
+    final locale = ref.watch(languageProvider);
 
     return Scaffold(
       backgroundColor: Colors.grey.shade50,
       appBar: AppBar(
         title: Row(
-          children: const [
-            Icon(LucideIcons.user, size: 24),
-            SizedBox(width: 8),
-            Text('Profile', style: TextStyle(fontWeight: FontWeight.bold)),
+          children: [
+            const Icon(LucideIcons.user, size: 24),
+            const SizedBox(width: 8),
+            Text(
+              AppStrings.tr('profile_title', locale),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
         actions: [
@@ -30,17 +36,17 @@ class ProfileScreen extends ConsumerWidget {
               showDialog(
                 context: context,
                 builder: (context) => AlertDialog(
-                  title: const Text(
-                    'Sign Out',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                  title: Text(
+                    AppStrings.tr('sign_out', locale),
+                    style: const TextStyle(fontWeight: FontWeight.bold),
                   ),
-                  content: const Text('Are you sure you want to sign out?'),
+                  content: Text(AppStrings.tr('sign_out_confirmation', locale)),
                   actions: [
                     TextButton(
                       onPressed: () => Navigator.pop(context),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(color: Colors.grey),
+                      child: Text(
+                        AppStrings.tr('cancel', locale),
+                        style: const TextStyle(color: Colors.grey),
                       ),
                     ),
                     TextButton(
@@ -48,9 +54,9 @@ class ProfileScreen extends ConsumerWidget {
                         Navigator.pop(context);
                         ref.read(authServiceProvider).signOut();
                       },
-                      child: const Text(
-                        'Sign Out',
-                        style: TextStyle(
+                      child: Text(
+                        AppStrings.tr('sign_out', locale),
+                        style: const TextStyle(
                           color: Color(0xFF0F4C45),
                           fontWeight: FontWeight.bold,
                         ),
@@ -161,9 +167,9 @@ class ProfileScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Account Information',
-                              style: TextStyle(
+                            Text(
+                              AppStrings.tr('account_information', locale),
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                                 color: Colors.black87,
@@ -172,19 +178,22 @@ class ProfileScreen extends ConsumerWidget {
                             const SizedBox(height: 24),
                             _InfoRow(
                               icon: LucideIcons.mapPin,
-                              label: 'Barangay:',
+                              label: AppStrings.tr('barangay_label', locale),
                               value: barangay,
                             ),
                             const SizedBox(height: 16),
                             _InfoRow(
                               icon: LucideIcons.phone,
-                              label: 'Mobile:',
+                              label: AppStrings.tr('mobile_label', locale),
                               value: phone,
                             ),
                             const SizedBox(height: 16),
                             _InfoRow(
                               icon: LucideIcons.fileText,
-                              label: 'Reports Submitted:',
+                              label: AppStrings.tr(
+                                'reports_submitted_label',
+                                locale,
+                              ),
                               value: (data?['reportsSubmitted'] ?? 0)
                                   .toString(),
                             ),
@@ -205,9 +214,9 @@ class ProfileScreen extends ConsumerWidget {
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text(
-                              'Language / Wika',
-                              style: TextStyle(
+                            Text(
+                              AppStrings.tr('language_label', locale),
+                              style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
                                 color: Colors.black87,
@@ -223,38 +232,72 @@ class ProfileScreen extends ConsumerWidget {
                               child: Row(
                                 children: [
                                   Expanded(
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                      ),
-                                      decoration: const BoxDecoration(
-                                        color: Color(0xFF0F4C45),
-                                        borderRadius: BorderRadius.only(
-                                          topLeft: Radius.circular(7),
-                                          bottomLeft: Radius.circular(7),
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        ref
+                                            .read(languageProvider.notifier)
+                                            .setLocale(const Locale('en'));
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
                                         ),
-                                      ),
-                                      child: const Text(
-                                        'English',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.white,
-                                          fontWeight: FontWeight.bold,
+                                        decoration: BoxDecoration(
+                                          color: locale.languageCode == 'en'
+                                              ? const Color(0xFF0F4C45)
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.horizontal(
+                                            left: const Radius.circular(7),
+                                            right: locale.languageCode == 'en'
+                                                ? const Radius.circular(0)
+                                                : Radius
+                                                      .zero, // logic simplified for border radius visual
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'English',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: locale.languageCode == 'en'
+                                                ? Colors.white
+                                                : Colors.black87,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),
                                   ),
                                   Expanded(
-                                    child: Container(
-                                      padding: const EdgeInsets.symmetric(
-                                        vertical: 12,
-                                      ),
-                                      child: const Text(
-                                        'Filipino',
-                                        textAlign: TextAlign.center,
-                                        style: TextStyle(
-                                          color: Colors.black87,
-                                          fontWeight: FontWeight.bold,
+                                    child: GestureDetector(
+                                      onTap: () {
+                                        ref
+                                            .read(languageProvider.notifier)
+                                            .setLocale(const Locale('tl'));
+                                      },
+                                      child: Container(
+                                        padding: const EdgeInsets.symmetric(
+                                          vertical: 12,
+                                        ),
+                                        decoration: BoxDecoration(
+                                          color: locale.languageCode == 'tl'
+                                              ? const Color(0xFF0F4C45)
+                                              : Colors.transparent,
+                                          borderRadius: BorderRadius.horizontal(
+                                            right: const Radius.circular(7),
+                                            left: locale.languageCode == 'tl'
+                                                ? const Radius.circular(0)
+                                                : Radius.zero,
+                                          ),
+                                        ),
+                                        child: Text(
+                                          'Filipino',
+                                          textAlign: TextAlign.center,
+                                          style: TextStyle(
+                                            color: locale.languageCode == 'tl'
+                                                ? Colors.white
+                                                : Colors.black87,
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
                                       ),
                                     ),

@@ -8,6 +8,8 @@ import 'package:intl/intl.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 import '../../services/report_service.dart';
+import '../../services/language_provider.dart';
+import '../../shared/app_strings.dart';
 import '../../shared/barangay_data.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
@@ -24,14 +26,18 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   @override
   Widget build(BuildContext context) {
     final reportsAsync = ref.watch(reportStreamProvider);
+    final locale = ref.watch(languageProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          children: const [
-            Icon(LucideIcons.mapPin, size: 24),
-            SizedBox(width: 8),
-            Text('Outage Map', style: TextStyle(fontWeight: FontWeight.bold)),
+          children: [
+            const Icon(LucideIcons.mapPin, size: 24),
+            const SizedBox(width: 8),
+            Text(
+              AppStrings.tr('outage_map_title', locale),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
@@ -107,6 +113,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                               data['notes'] ?? '',
                               status,
                               timestamp,
+                              locale,
                             ),
                             child: Container(
                               decoration: BoxDecoration(
@@ -163,13 +170,19 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 child: Row(
                   mainAxisSize: MainAxisSize.min,
                   children: [
-                    _LegendItem(color: Colors.red, label: 'Blackout'),
+                    _LegendItem(
+                      color: Colors.red,
+                      label: AppStrings.tr('map_legend_blackout', locale),
+                    ),
                     const SizedBox(width: 12),
-                    _LegendItem(color: Colors.amber, label: 'Low Voltage'),
+                    _LegendItem(
+                      color: Colors.amber,
+                      label: AppStrings.tr('map_legend_low_voltage', locale),
+                    ),
                     const SizedBox(width: 12),
                     _LegendItem(
                       color: Colors.yellow.shade800,
-                      label: 'Flickering',
+                      label: AppStrings.tr('map_legend_flickering', locale),
                     ),
                   ],
                 ),
@@ -188,6 +201,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     String notes,
     String status,
     Timestamp? timestamp,
+    Locale locale,
   ) {
     showModalBottomSheet(
       context: context,
@@ -261,9 +275,9 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               ],
               if (notes.isNotEmpty) ...[
                 const SizedBox(height: 16),
-                const Text(
-                  'Notes:',
-                  style: TextStyle(fontWeight: FontWeight.bold),
+                Text(
+                  AppStrings.tr('map_notes', locale),
+                  style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
                 Text(notes),
               ],
