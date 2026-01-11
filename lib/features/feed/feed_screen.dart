@@ -8,11 +8,26 @@ import '../../services/report_service.dart';
 import '../../services/language_provider.dart';
 import '../../shared/app_strings.dart';
 
-class FeedScreen extends ConsumerWidget {
+class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
 
   @override
-  Widget build(BuildContext context, WidgetRef ref) {
+  ConsumerState<FeedScreen> createState() => _FeedScreenState();
+}
+
+class _FeedScreenState extends ConsumerState<FeedScreen> {
+  final TextEditingController _searchController = TextEditingController();
+  String _searchQuery = '';
+  String _filterStatus = 'All';
+
+  @override
+  void dispose() {
+    _searchController.dispose();
+    super.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
     final reportsAsync = ref.watch(reportStreamProvider);
     final currentUser = ref.watch(authServiceProvider).currentUser;
     final locale = ref.watch(languageProvider);
@@ -38,6 +53,12 @@ class FeedScreen extends ConsumerWidget {
               children: [
                 Expanded(
                   child: TextField(
+                    controller: _searchController,
+                    onChanged: (value) {
+                      setState(() {
+                        _searchQuery = value.toLowerCase();
+                      });
+                    },
                     decoration: InputDecoration(
                       hintText: AppStrings.tr('feed_search_hint', locale),
                       prefixIcon: const Icon(LucideIcons.search),
@@ -50,16 +71,52 @@ class FeedScreen extends ConsumerWidget {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Container(
-                  padding: const EdgeInsets.all(12),
-                  decoration: BoxDecoration(
-                    border: Border.all(color: Colors.grey.shade300),
-                    borderRadius: BorderRadius.circular(8),
-                  ),
-                  child: const Icon(
-                    LucideIcons.filter,
-                    size: 20,
-                    color: Colors.black54,
+                PopupMenuButton<String>(
+                  initialValue: _filterStatus,
+                  onSelected: (String value) {
+                    setState(() {
+                      _filterStatus = value;
+                    });
+                  },
+                  itemBuilder: (BuildContext context) =>
+                      <PopupMenuEntry<String>>[
+                        const PopupMenuItem<String>(
+                          value: 'All',
+                          child: Text('All Status'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'Pending',
+                          child: Text('Pending'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'Acknowledged',
+                          child: Text('Acknowledged'),
+                        ),
+                        const PopupMenuItem<String>(
+                          value: 'Resolved',
+                          child: Text('Resolved'),
+                        ),
+                      ],
+                  child: Container(
+                    padding: const EdgeInsets.all(12),
+                    decoration: BoxDecoration(
+                      border: Border.all(
+                        color: _filterStatus == 'All'
+                            ? Colors.grey.shade300
+                            : const Color(0xFF0F4C45),
+                      ),
+                      borderRadius: BorderRadius.circular(8),
+                      color: _filterStatus == 'All'
+                          ? Colors.transparent
+                          : const Color(0xFF0F4C45).withValues(alpha: 0.1),
+                    ),
+                    child: Icon(
+                      LucideIcons.filter,
+                      size: 20,
+                      color: _filterStatus == 'All'
+                          ? Colors.black54
+                          : const Color(0xFF0F4C45),
+                    ),
                   ),
                 ),
               ],
@@ -68,16 +125,38 @@ class FeedScreen extends ConsumerWidget {
           Expanded(
             child: reportsAsync.when(
               data: (snapshot) {
-                if (snapshot.docs.isEmpty) {
+                final docs = snapshot.docs.where((doc) {
+                  final data = doc.data() as Map<String, dynamic>;
+
+                  // Status Filter
+                  if (_filterStatus != 'All') {
+                    final status = data['status'] as String? ?? 'Pending';
+                    if (status != _filterStatus) return false;
+                  }
+
+                  // Search Filter
+                  if (_searchQuery.isEmpty) return true;
+                  final barangay = (data['barangay'] as String? ?? '')
+                      .toLowerCase();
+                  final issueType = (data['issueType'] as String? ?? '')
+                      .toLowerCase();
+                  final notes = (data['notes'] as String? ?? '').toLowerCase();
+
+                  return barangay.contains(_searchQuery) ||
+                      issueType.contains(_searchQuery) ||
+                      notes.contains(_searchQuery);
+                }).toList();
+
+                if (docs.isEmpty) {
                   return Center(
                     child: Text(AppStrings.tr('feed_no_reports', locale)),
                   );
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: snapshot.docs.length,
+                  itemCount: docs.length,
                   itemBuilder: (context, index) {
-                    final doc = snapshot.docs[index];
+                    final doc = docs[index];
                     final data = doc.data() as Map<String, dynamic>;
 
                     // Basic time ago logic
