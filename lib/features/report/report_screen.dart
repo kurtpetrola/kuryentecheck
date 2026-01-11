@@ -4,6 +4,8 @@ import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../services/report_service.dart';
+import '../../services/language_provider.dart';
+import '../../shared/app_strings.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -58,9 +60,14 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
   }
 
   Future<void> _submitReport() async {
+    final locale = ref.read(languageProvider);
     if (_selectedBarangay == null || _selectedIssue == null) {
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(content: Text('Please fill in all required fields')),
+        SnackBar(
+          content: Text(
+            AppStrings.tr('report_snackbar_missing_fields', locale),
+          ),
+        ),
       );
       return;
     }
@@ -76,9 +83,9 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
       if (mounted) {
         ScaffoldMessenger.of(context).showSnackBar(
-          const SnackBar(
-            content: Text('Report submitted successfully!'),
-            backgroundColor: Color(0xFF0F4C45),
+          SnackBar(
+            content: Text(AppStrings.tr('report_snackbar_success', locale)),
+            backgroundColor: const Color(0xFF0F4C45),
           ),
         );
         // Reset form
@@ -102,13 +109,18 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(languageProvider);
+
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          children: const [
-            Icon(LucideIcons.zap, size: 24),
-            SizedBox(width: 8),
-            Text('Report Issue', style: TextStyle(fontWeight: FontWeight.bold)),
+          children: [
+            const Icon(LucideIcons.zap, size: 24),
+            const SizedBox(width: 8),
+            Text(
+              AppStrings.tr('report_issue_title', locale),
+              style: const TextStyle(fontWeight: FontWeight.bold),
+            ),
           ],
         ),
       ),
@@ -117,16 +129,16 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.stretch,
           children: [
-            const Text(
-              'Barangay',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            Text(
+              AppStrings.tr('report_form_barangay', locale),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
               // ignore: deprecated_member_use
               value: _selectedBarangay,
               decoration: InputDecoration(
-                hintText: 'Select your barangay',
+                hintText: AppStrings.tr('report_form_barangay_hint', locale),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -146,45 +158,45 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               onChanged: (val) => setState(() => _selectedBarangay = val),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Issue Type',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            Text(
+              AppStrings.tr('report_form_issue_type', locale),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             const SizedBox(height: 8),
             _IssueTypeCard(
-              title: 'Total Blackout',
-              subtitle: 'Complete power outage',
+              title: AppStrings.tr('report_issue_blackout', locale),
+              subtitle: AppStrings.tr('report_issue_blackout_desc', locale),
               icon: LucideIcons.zapOff,
               isSelected: _selectedIssue == 'Total Blackout',
               onTap: () => setState(() => _selectedIssue = 'Total Blackout'),
             ),
             const SizedBox(height: 12),
             _IssueTypeCard(
-              title: 'Low Voltage',
-              subtitle: 'Dim lights, weak appliances',
+              title: AppStrings.tr('report_issue_low_voltage', locale),
+              subtitle: AppStrings.tr('report_issue_low_voltage_desc', locale),
               icon: LucideIcons.activity,
               isSelected: _selectedIssue == 'Low Voltage',
               onTap: () => setState(() => _selectedIssue = 'Low Voltage'),
             ),
             const SizedBox(height: 12),
             _IssueTypeCard(
-              title: 'Flickering Lights',
-              subtitle: 'Unstable power supply',
+              title: AppStrings.tr('report_issue_flickering', locale),
+              subtitle: AppStrings.tr('report_issue_flickering_desc', locale),
               icon: LucideIcons.zap,
               isSelected: _selectedIssue == 'Flickering Lights',
               onTap: () => setState(() => _selectedIssue = 'Flickering Lights'),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Additional Notes (Optional)',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            Text(
+              AppStrings.tr('report_form_notes', locale),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             const SizedBox(height: 8),
             TextField(
               controller: _notesController,
               maxLines: 3,
               decoration: InputDecoration(
-                hintText: 'Describe the issue in more detail...',
+                hintText: AppStrings.tr('report_form_notes_hint', locale),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
                   borderSide: BorderSide(color: Colors.grey.shade300),
@@ -196,9 +208,9 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               ),
             ),
             const SizedBox(height: 24),
-            const Text(
-              'Auto-filled Information',
-              style: TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
+            Text(
+              AppStrings.tr('report_form_autofilled', locale),
+              style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             const SizedBox(height: 8),
             Row(
@@ -212,7 +224,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   icon: LucideIcons.mapPin,
                   label: _selectedBarangay != null
                       ? 'Barangay $_selectedBarangay'
-                      : 'Location not set',
+                      : AppStrings.tr('report_location_not_set', locale),
                 ),
               ],
             ),
@@ -231,7 +243,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   fontWeight: FontWeight.bold,
                 ),
               ),
-              child: const Text('Submit Report'),
+              child: Text(AppStrings.tr('submit_report_button', locale)),
             ),
           ],
         ),

@@ -5,6 +5,8 @@ import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../services/auth_service.dart';
 import '../../services/report_service.dart';
+import '../../services/language_provider.dart';
+import '../../shared/app_strings.dart';
 
 class FeedScreen extends ConsumerWidget {
   const FeedScreen({super.key});
@@ -13,16 +15,17 @@ class FeedScreen extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final reportsAsync = ref.watch(reportStreamProvider);
     final currentUser = ref.watch(authServiceProvider).currentUser;
+    final locale = ref.watch(languageProvider);
 
     return Scaffold(
       appBar: AppBar(
         title: Row(
-          children: const [
-            Icon(LucideIcons.fileText, size: 24),
-            SizedBox(width: 8),
+          children: [
+            const Icon(LucideIcons.fileText, size: 24),
+            const SizedBox(width: 8),
             Text(
-              'Community Feed',
-              style: TextStyle(fontWeight: FontWeight.bold),
+              AppStrings.tr('community_feed_title', locale),
+              style: const TextStyle(fontWeight: FontWeight.bold),
             ),
           ],
         ),
@@ -36,7 +39,7 @@ class FeedScreen extends ConsumerWidget {
                 Expanded(
                   child: TextField(
                     decoration: InputDecoration(
-                      hintText: 'Search by barangay or issue...',
+                      hintText: AppStrings.tr('feed_search_hint', locale),
                       prefixIcon: const Icon(LucideIcons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
@@ -66,7 +69,9 @@ class FeedScreen extends ConsumerWidget {
             child: reportsAsync.when(
               data: (snapshot) {
                 if (snapshot.docs.isEmpty) {
-                  return const Center(child: Text('No reports yet.'));
+                  return Center(
+                    child: Text(AppStrings.tr('feed_no_reports', locale)),
+                  );
                 }
                 return ListView.builder(
                   padding: const EdgeInsets.symmetric(horizontal: 16),
@@ -77,17 +82,20 @@ class FeedScreen extends ConsumerWidget {
 
                     // Basic time ago logic
                     final timestamp = data['timestamp'] as Timestamp?;
-                    String timeAgoStr = 'Just now';
+                    String timeAgoStr = AppStrings.tr('time_just_now', locale);
                     if (timestamp != null) {
                       final diff = DateTime.now().difference(
                         timestamp.toDate(),
                       );
                       if (diff.inMinutes < 60) {
-                        timeAgoStr = '${diff.inMinutes}m ago';
+                        timeAgoStr =
+                            '${diff.inMinutes}${AppStrings.tr('time_m_ago', locale)}';
                       } else if (diff.inHours < 24) {
-                        timeAgoStr = '${diff.inHours}h ago';
+                        timeAgoStr =
+                            '${diff.inHours}${AppStrings.tr('time_h_ago', locale)}';
                       } else {
-                        timeAgoStr = '${diff.inDays}d ago';
+                        timeAgoStr =
+                            '${diff.inDays}${AppStrings.tr('time_d_ago', locale)}';
                       }
                     }
 
@@ -113,6 +121,15 @@ class FeedScreen extends ConsumerWidget {
                         currentUser != null &&
                         likedBy.contains(currentUser.uid);
 
+                    String status = data['status'] ?? 'Pending';
+                    if (status == 'Pending') {
+                      status = AppStrings.tr('status_pending', locale);
+                    } else if (status == 'Acknowledged') {
+                      status = AppStrings.tr('status_acknowledged', locale);
+                    } else if (status == 'Resolved') {
+                      status = AppStrings.tr('status_resolved', locale);
+                    }
+
                     return Padding(
                       padding: const EdgeInsets.only(bottom: 16),
                       child: _FeedCard(
@@ -123,7 +140,7 @@ class FeedScreen extends ConsumerWidget {
                         issueColor: color,
                         description:
                             data['notes'] ?? 'No description provided.',
-                        status: data['status'] ?? 'Pending',
+                        status: status,
                         statusColor: (data['status'] == 'Resolved')
                             ? Colors.green
                             : ((data['status'] == 'Acknowledged')
