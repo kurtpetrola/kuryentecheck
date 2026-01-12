@@ -11,11 +11,13 @@ import '../features/auth/login_screen.dart';
 import '../features/auth/register_screen.dart';
 import '../features/auth/forgot_password_screen.dart';
 import '../services/auth_service.dart';
+import '../features/admin/admin_dashboard_screen.dart';
 import 'scaffold_with_navbar.dart';
 import 'onboarding_screen.dart';
 
 final routerProvider = Provider<GoRouter>((ref) {
   final authState = ref.watch(authStateProvider);
+  final userRole = ref.watch(userRoleProvider);
   final rootNavigatorKey = GlobalKey<NavigatorState>();
 
   return GoRouter(
@@ -40,22 +42,39 @@ final routerProvider = Provider<GoRouter>((ref) {
 
       // 2. Auth Check
       if (!isLoggedIn && !isLoggingIn) {
-        // If not logged in and trying to access a protected route, go to login
-        // But only if we are NOT on onboarding (which is handled above)
         if (state.uri.toString() != '/onboarding') {
           return '/login';
         }
       }
 
-      // 3. Login Redirect
-      if (isLoggedIn && isLoggingIn) {
-        // If logged in but on login/register page, go to home
-        return '/report';
+      // 3. Login/Redirect Logic
+      if (isLoggedIn) {
+        // Wait for role to load if it's null but user is logged in
+        // (StreamProvider might be loading initial value)
+        // If snapshot is loading, we might want to wait or show splash, but for simplicity:
+        final role = userRole.value;
+
+        if (role == 'admin') {
+          if (state.uri.toString() != '/admin') {
+            return '/admin';
+          }
+          return null;
+        }
+
+        // If resident
+        if (isLoggingIn || state.uri.toString() == '/admin') {
+          // Redirect away from login pages OR admin page if not admin
+          return '/report';
+        }
       }
 
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/admin',
+        builder: (context, state) => const AdminDashboardScreen(),
+      ),
       GoRoute(
         path: '/onboarding',
         builder: (context, state) => const OnboardingScreen(),
