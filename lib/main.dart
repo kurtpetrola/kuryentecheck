@@ -6,6 +6,8 @@ import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 import 'shared/router.dart';
 import 'services/language_provider.dart';
+import 'services/notification_service.dart';
+import 'shared/notification_listener_wrapper.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -19,6 +21,9 @@ void main() async {
   } catch (e) {
     debugPrint('Firebase initialization failed: $e');
   }
+
+  // Initialize Notifications
+  await NotificationService().init();
 
   runApp(
     ProviderScope(
@@ -54,6 +59,8 @@ class MyApp extends ConsumerWidget {
         textTheme: GoogleFonts.interTextTheme(),
       ),
       routerConfig: router,
+      builder: (context, child) =>
+          NotificationListenerWrapper(child: child ?? const SizedBox()),
     );
   }
 }

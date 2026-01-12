@@ -79,4 +79,12 @@ class ReportService {
   Stream<QuerySnapshot> getReports() {
     return _reports.orderBy('timestamp', descending: true).snapshots();
   }
+
+  // Get stream of user specific reports for notifications
+  Stream<QuerySnapshot> getUserReports() {
+    final user = _ref.read(authServiceProvider).currentUser;
+    if (user == null) return const Stream.empty();
+
+    return _reports.where('userId', isEqualTo: user.uid).snapshots();
+  }
 }
