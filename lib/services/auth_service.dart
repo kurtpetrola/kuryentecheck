@@ -61,3 +61,19 @@ class AuthService {
     await _auth.sendPasswordResetEmail(email: email);
   }
 }
+
+final userRoleProvider = StreamProvider<String?>((ref) {
+  final authState = ref.watch(authStateProvider);
+  final user = authState.value;
+
+  if (user == null) return Stream.value(null);
+
+  return FirebaseFirestore.instance
+      .collection('users')
+      .doc(user.uid)
+      .snapshots()
+      .map((snapshot) {
+        final data = snapshot.data();
+        return data?['role'] as String? ?? 'resident';
+      });
+});
