@@ -53,7 +53,7 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           showWhen: true,
-          color: const Color(0xFF0F4C45),
+          color: Color(0xFF0F4C45),
         );
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(

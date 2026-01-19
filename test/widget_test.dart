@@ -1,30 +1,41 @@
-// This is a basic Flutter widget test.
-//
-// To perform an interaction with a widget in your test, use the WidgetTester
-// utility in the flutter_test package. For example, you can send tap and scroll
-// gestures. You can also use WidgetTester to find child widgets in the widget
-// tree, read text, and verify that the values of widget properties are correct.
-
-import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-
 import 'package:kuryente_check/main.dart';
+import 'package:kuryente_check/services/auth_service.dart';
+import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {
-  testWidgets('Counter increments smoke test', (WidgetTester tester) async {
-    // Build our app and trigger a frame.
-    await tester.pumpWidget(const MyApp());
+  testWidgets('App starts and shows onboarding when not seen', (
+    WidgetTester tester,
+  ) async {
+    // 1. Mock SharedPreferences to simulate fresh install
+    SharedPreferences.setMockInitialValues({'hasSeenOnboarding': false});
 
-    // Verify that our counter starts at 0.
-    expect(find.text('0'), findsOneWidget);
-    expect(find.text('1'), findsNothing);
+    // 2. Pump the widget with Provider overrides
+    await tester.pumpWidget(
+      ProviderScope(
+        overrides: [
+          // Mock auth state to be logged out
+          authStateProvider.overrideWith((ref) => Stream.value(null)),
+          // Mock user role
+          userRoleProvider.overrideWith((ref) => Stream.value(null)),
+        ],
+        child: const MyApp(),
+      ),
+    );
 
-    // Tap the '+' icon and trigger a frame.
-    await tester.tap(find.byIcon(Icons.add));
-    await tester.pump();
+    // 3. Trigger a frame (for async router/state)
+    await tester.pumpAndSettle();
 
-    // Verify that our counter has incremented.
-    expect(find.text('0'), findsNothing);
-    expect(find.text('1'), findsOneWidget);
+    // 4. Verify Onboarding Screen is shown
+    // "Report Issues" is the title of the first onboarding page
+    expect(find.text('Report Issues'), findsOneWidget);
+    expect(
+      find.text('Easily report power outages in your area.'),
+      findsOneWidget,
+    );
+
+    // Verify "Get Started" or "Next" button is there
+    expect(find.text('Next'), findsOneWidget);
   });
 }
