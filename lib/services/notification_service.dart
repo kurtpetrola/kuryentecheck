@@ -33,7 +33,7 @@ class NotificationService {
       },
     );
     // Request permissions for Android 13+
-    _notificationsPlugin
+    await _notificationsPlugin
         .resolvePlatformSpecificImplementation<
           AndroidFlutterLocalNotificationsPlugin
         >()

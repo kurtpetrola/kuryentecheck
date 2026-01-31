@@ -6,8 +6,8 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../services/language_provider.dart';
 import '../../shared/app_strings.dart';
 import '../../shared/constants.dart';
-import '../../shared/widgets/issue_type_card.dart';
 import '../../shared/widgets/info_chip.dart';
+import '../../shared/widgets/issue_type_card.dart';
 import 'report_controller.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {

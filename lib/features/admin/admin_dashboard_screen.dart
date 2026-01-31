@@ -1,12 +1,13 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:lucide_icons/lucide_icons.dart';
 import 'package:intl/intl.dart';
+import 'package:lucide_icons/lucide_icons.dart';
+
 import '../../services/auth_service.dart';
+import '../../services/language_provider.dart';
 import '../../services/report_service.dart';
 import '../../shared/app_strings.dart';
-import '../../services/language_provider.dart';
 
 class AdminDashboardScreen extends ConsumerStatefulWidget {
   const AdminDashboardScreen({super.key});

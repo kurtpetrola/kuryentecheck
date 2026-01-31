@@ -1,13 +1,14 @@
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 import 'package:google_fonts/google_fonts.dart';
-import 'package:firebase_core/firebase_core.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
 import 'firebase_options.dart';
-import 'shared/router.dart';
 import 'services/language_provider.dart';
 import 'services/notification_service.dart';
 import 'shared/notification_listener_wrapper.dart';
+import 'shared/router.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
