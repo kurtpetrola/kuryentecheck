@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-import 'package:google_fonts/google_fonts.dart';
+
 import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../services/auth_service.dart';
+import '../../shared/widgets/auth_header.dart';
+import '../../shared/widgets/custom_text_field.dart';
+import '../../shared/widgets/primary_button.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});
@@ -121,20 +124,9 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.stretch,
               children: [
-                Text(
-                  'Create Account',
-                  style: GoogleFonts.inter(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF0F4C45),
-                  ),
-                ),
-                Text(
-                  'Sign up to get started',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                  ),
+                const AuthHeader(
+                  title: 'Create Account',
+                  subtitle: 'Sign up to get started',
                 ),
                 const SizedBox(height: 32),
 
@@ -155,51 +147,39 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                     ),
                   ),
 
-                TextFormField(
+                CustomTextField(
                   controller: _nameController,
-                  decoration: const InputDecoration(
-                    labelText: 'Full Name',
-                    prefixIcon: Icon(LucideIcons.user),
-                    border: OutlineInputBorder(),
-                  ),
+                  labelText: 'Full Name',
+                  prefixIcon: LucideIcons.user,
                   validator: (value) =>
                       value?.isEmpty ?? true ? 'Enter your name' : null,
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
+                CustomTextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email Address',
-                    prefixIcon: Icon(LucideIcons.mail),
-                    border: OutlineInputBorder(),
-                  ),
+                  labelText: 'Email Address',
+                  prefixIcon: LucideIcons.mail,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) =>
                       value?.isEmpty ?? true ? 'Enter your email' : null,
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
+                CustomTextField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(LucideIcons.lock),
-                    border: OutlineInputBorder(),
-                  ),
+                  labelText: 'Password',
+                  prefixIcon: LucideIcons.lock,
                   obscureText: true,
                   validator: (value) =>
                       (value?.length ?? 0) < 6 ? 'Password too short' : null,
                 ),
                 const SizedBox(height: 16),
 
-                TextFormField(
+                CustomTextField(
                   controller: _phoneController,
-                  decoration: const InputDecoration(
-                    labelText: 'Phone Number',
-                    prefixIcon: Icon(LucideIcons.phone),
-                    border: OutlineInputBorder(),
-                  ),
+                  labelText: 'Phone Number',
+                  prefixIcon: LucideIcons.phone,
                   keyboardType: TextInputType.phone,
                   validator: (value) =>
                       value?.isEmpty ?? true ? 'Enter your phone number' : null,
@@ -208,7 +188,8 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
 
                 DropdownButtonFormField<String>(
                   key: ValueKey(_selectedBarangay),
-                  initialValue: _selectedBarangay,
+                  // ignore: deprecated_member_use
+                  value: _selectedBarangay,
                   decoration: const InputDecoration(
                     labelText: 'Barangay',
                     prefixIcon: Icon(LucideIcons.mapPin),
@@ -228,32 +209,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
                 ),
 
                 const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: _isLoading ? null : _register,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F4C45),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Text(
-                          'Register',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                PrimaryButton(
+                  onPressed: _register,
+                  text: 'Register',
+                  isLoading: _isLoading,
                 ),
               ],
             ),
