@@ -1,14 +1,15 @@
 import 'dart:math';
+
+import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_map/flutter_map.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import 'package:intl/intl.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
-import '../../services/report_service.dart';
 import '../../services/language_provider.dart';
+import '../../services/report_service.dart';
 import '../../shared/app_strings.dart';
 import '../../shared/barangay_data.dart';
 
@@ -44,7 +45,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
       body: Stack(
         children: [
           FlutterMap(
-            options: MapOptions(
+            options: const MapOptions(
               initialCenter: _mangaldanCenter,
               initialZoom: 13.5,
               maxZoom: 18.0,
