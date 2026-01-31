@@ -7,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'firebase_options.dart';
 import 'services/language_provider.dart';
 import 'services/notification_service.dart';
+import 'services/sync_service.dart';
 import 'shared/notification_listener_wrapper.dart';
 import 'shared/router.dart';
 
@@ -39,6 +40,9 @@ class MyApp extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    // Initialize SyncService to listen for connectivity changes
+    ref.watch(syncServiceProvider);
+
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(

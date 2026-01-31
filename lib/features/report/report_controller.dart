@@ -1,4 +1,6 @@
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../services/offline_report_service.dart';
 import '../../services/report_service.dart';
 
 class ReportFormState {
@@ -51,15 +53,35 @@ class ReportFormController extends Notifier<ReportFormState> {
     state = state.copyWith(notes: notes);
   }
 
-  Future<bool> submitReport() async {
+  Future<String> submitReport() async {
     if (state.selectedBarangay == null || state.selectedIssue == null) {
       state = state.copyWith(error: 'missing_fields');
-      return false;
+      return 'error';
     }
 
     state = state.copyWith(isLoading: true, error: null);
 
     try {
+      // Check connectivity
+      final connectivityResult = await Connectivity().checkConnectivity();
+      if (connectivityResult == ConnectivityResult.none) {
+        // Offline: Queue report
+        final reportData = {
+          'barangay': state.selectedBarangay,
+          'issueType': state.selectedIssue,
+          'notes': state.notes,
+          'timestamp': DateTime.now().toIso8601String(),
+        };
+
+        await ref.read(offlineReportServiceProvider).saveReport(reportData);
+
+        state = state.copyWith(isLoading: false);
+        // Reset form
+        state = ReportFormState();
+        return 'queued';
+      }
+
+      // Online: Send directly
       await ref
           .read(reportServiceProvider)
           .addReport(
@@ -70,10 +92,10 @@ class ReportFormController extends Notifier<ReportFormState> {
 
       // Reset form on success
       state = ReportFormState();
-      return true;
+      return 'sent';
     } catch (e) {
       state = state.copyWith(isLoading: false, error: e.toString());
-      return false;
+      return 'error';
     }
   }
 
