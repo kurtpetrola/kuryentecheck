@@ -5,6 +5,9 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../services/auth_service.dart';
+import '../../shared/widgets/auth_header.dart';
+import '../../shared/widgets/custom_text_field.dart';
+import '../../shared/widgets/primary_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
@@ -78,22 +81,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 24),
-                Text(
-                  'Welcome Back',
-                  style: GoogleFonts.inter(
-                    fontSize: 28,
-                    fontWeight: FontWeight.bold,
-                    color: const Color(0xFF0F4C45),
-                  ),
-                  textAlign: TextAlign.center,
-                ),
-                Text(
-                  'Sign in to continue reporting',
-                  style: GoogleFonts.inter(
-                    fontSize: 16,
-                    color: Colors.grey[600],
-                  ),
-                  textAlign: TextAlign.center,
+                const AuthHeader(
+                  title: 'Welcome Back',
+                  subtitle: 'Sign in to continue reporting',
                 ),
                 const SizedBox(height: 48),
 
@@ -114,13 +104,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     ),
                   ),
 
-                TextFormField(
+                CustomTextField(
                   controller: _emailController,
-                  decoration: const InputDecoration(
-                    labelText: 'Email Address',
-                    prefixIcon: Icon(LucideIcons.mail),
-                    border: OutlineInputBorder(),
-                  ),
+                  labelText: 'Email Address',
+                  prefixIcon: LucideIcons.mail,
                   keyboardType: TextInputType.emailAddress,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -130,13 +117,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   },
                 ),
                 const SizedBox(height: 16),
-                TextFormField(
+                CustomTextField(
                   controller: _passwordController,
-                  decoration: const InputDecoration(
-                    labelText: 'Password',
-                    prefixIcon: Icon(LucideIcons.lock),
-                    border: OutlineInputBorder(),
-                  ),
+                  labelText: 'Password',
+                  prefixIcon: LucideIcons.lock,
                   obscureText: true,
                   validator: (value) {
                     if (value == null || value.isEmpty) {
@@ -159,32 +143,10 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   ),
                 ),
                 const SizedBox(height: 32),
-                ElevatedButton(
-                  onPressed: _isLoading ? null : _login,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF0F4C45),
-                    foregroundColor: Colors.white,
-                    padding: const EdgeInsets.symmetric(vertical: 16),
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(8),
-                    ),
-                  ),
-                  child: _isLoading
-                      ? const SizedBox(
-                          height: 20,
-                          width: 20,
-                          child: CircularProgressIndicator(
-                            strokeWidth: 2,
-                            color: Colors.white,
-                          ),
-                        )
-                      : const Text(
-                          'Sign In',
-                          style: TextStyle(
-                            fontSize: 16,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
+                PrimaryButton(
+                  onPressed: _login,
+                  text: 'Sign In',
+                  isLoading: _isLoading,
                 ),
                 const SizedBox(height: 24),
                 Row(
