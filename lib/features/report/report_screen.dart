@@ -3,9 +3,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../services/report_service.dart';
 import '../../services/language_provider.dart';
 import '../../shared/app_strings.dart';
+import '../../shared/constants.dart';
+import '../../shared/widgets/issue_type_card.dart';
+import '../../shared/widgets/info_chip.dart';
+import 'report_controller.dart';
 
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
@@ -15,43 +18,22 @@ class ReportScreen extends ConsumerStatefulWidget {
 }
 
 class _ReportScreenState extends ConsumerState<ReportScreen> {
-  String? _selectedBarangay;
-  String? _selectedIssue;
-  final _notesController = TextEditingController();
+  late final TextEditingController _notesController;
 
-  final List<String> _barangays = [
-    'Alitaya',
-    'Amansabina',
-    'Anolid',
-    'Banaoang',
-    'Bantayan',
-    'Bari',
-    'Bateng',
-    'Buenlag',
-    'David',
-    'Embarcadero',
-    'Gueguesangen',
-    'Guesang',
-    'Guiguilonen',
-    'Guilig',
-    'Inlambo',
-    'Lanas',
-    'Landas',
-    'Maasin',
-    'Macayug',
-    'Malabago',
-    'Merano',
-    'Navaluan',
-    'Nibaliw',
-    'Osiem',
-    'Palua',
-    'Poblacion',
-    'Pogo',
-    'Salaan',
-    'Salapingao',
-    'Talogtog',
-    'Tebag',
-  ];
+  @override
+  void initState() {
+    super.initState();
+    // Initialize with current state notes if any
+    final currentNotes = ref.read(reportFormControllerProvider).notes;
+    _notesController = TextEditingController(text: currentNotes);
+
+    // Listen to changes to update state
+    _notesController.addListener(() {
+      ref
+          .read(reportFormControllerProvider.notifier)
+          .setNotes(_notesController.text);
+    });
+  }
 
   @override
   void dispose() {
@@ -61,55 +43,39 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
   Future<void> _submitReport() async {
     final locale = ref.read(languageProvider);
-    if (_selectedBarangay == null || _selectedIssue == null) {
+    final controller = ref.read(reportFormControllerProvider.notifier);
+
+    final success = await controller.submitReport();
+
+    if (!mounted) return;
+
+    if (success) {
+      _notesController.clear();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
-          content: Text(
-            AppStrings.tr('report_snackbar_missing_fields', locale),
-          ),
+          content: Text(AppStrings.tr('report_snackbar_success', locale)),
+          backgroundColor: const Color(0xFF0F4C45),
         ),
       );
-      return;
-    }
+    } else {
+      final error = ref.read(reportFormControllerProvider).error;
+      String errorMessage = error ?? 'Unknown error';
 
-    try {
-      await ref
-          .read(reportServiceProvider)
-          .addReport(
-            barangay: _selectedBarangay!,
-            issueType: _selectedIssue!,
-            notes: _notesController.text.trim(),
-          );
+      if (error == 'missing_fields') {
+        errorMessage = AppStrings.tr('report_snackbar_missing_fields', locale);
+      }
 
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text(AppStrings.tr('report_snackbar_success', locale)),
-            backgroundColor: const Color(0xFF0F4C45),
-          ),
-        );
-        // Reset form
-        setState(() {
-          _selectedBarangay = null;
-          _selectedIssue = null;
-          _notesController.clear();
-        });
-      }
-    } catch (e) {
-      if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(
-            content: Text('Error submitting report: $e'),
-            backgroundColor: Colors.red,
-          ),
-        );
-      }
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+      );
     }
   }
 
   @override
   Widget build(BuildContext context) {
     final locale = ref.watch(languageProvider);
+    final formState = ref.watch(reportFormControllerProvider);
+    final controller = ref.read(reportFormControllerProvider.notifier);
 
     return Scaffold(
       appBar: AppBar(
@@ -135,8 +101,8 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             ),
             const SizedBox(height: 8),
             DropdownButtonFormField<String>(
-              // ignore: deprecated_member_use
-              value: _selectedBarangay,
+              key: const Key('barangay_dropdown'),
+              initialValue: formState.selectedBarangay,
               decoration: InputDecoration(
                 hintText: AppStrings.tr('report_form_barangay_hint', locale),
                 border: OutlineInputBorder(
@@ -152,10 +118,10 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                   vertical: 14,
                 ),
               ),
-              items: _barangays
+              items: Constants.barangays
                   .map((b) => DropdownMenuItem(value: b, child: Text(b)))
                   .toList(),
-              onChanged: (val) => setState(() => _selectedBarangay = val),
+              onChanged: controller.setBarangay,
             ),
             const SizedBox(height: 24),
             Text(
@@ -163,28 +129,29 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             const SizedBox(height: 8),
-            _IssueTypeCard(
+            IssueTypeCard(
+              key: const Key('issue_blackout'),
               title: AppStrings.tr('report_issue_blackout', locale),
               subtitle: AppStrings.tr('report_issue_blackout_desc', locale),
               icon: LucideIcons.zapOff,
-              isSelected: _selectedIssue == 'Total Blackout',
-              onTap: () => setState(() => _selectedIssue = 'Total Blackout'),
+              isSelected: formState.selectedIssue == 'Total Blackout',
+              onTap: () => controller.setIssue('Total Blackout'),
             ),
             const SizedBox(height: 12),
-            _IssueTypeCard(
+            IssueTypeCard(
               title: AppStrings.tr('report_issue_low_voltage', locale),
               subtitle: AppStrings.tr('report_issue_low_voltage_desc', locale),
               icon: LucideIcons.activity,
-              isSelected: _selectedIssue == 'Low Voltage',
-              onTap: () => setState(() => _selectedIssue = 'Low Voltage'),
+              isSelected: formState.selectedIssue == 'Low Voltage',
+              onTap: () => controller.setIssue('Low Voltage'),
             ),
             const SizedBox(height: 12),
-            _IssueTypeCard(
+            IssueTypeCard(
               title: AppStrings.tr('report_issue_flickering', locale),
               subtitle: AppStrings.tr('report_issue_flickering_desc', locale),
               icon: LucideIcons.zap,
-              isSelected: _selectedIssue == 'Flickering Lights',
-              onTap: () => setState(() => _selectedIssue = 'Flickering Lights'),
+              isSelected: formState.selectedIssue == 'Flickering Lights',
+              onTap: () => controller.setIssue('Flickering Lights'),
             ),
             const SizedBox(height: 24),
             Text(
@@ -215,130 +182,50 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
             const SizedBox(height: 8),
             Row(
               children: [
-                _InfoChip(
+                InfoChip(
                   icon: LucideIcons.clock,
                   label: DateFormat.jm().format(DateTime.now()),
                 ),
                 const SizedBox(width: 8),
-                _InfoChip(
+                InfoChip(
                   icon: LucideIcons.mapPin,
-                  label: _selectedBarangay != null
-                      ? 'Barangay $_selectedBarangay'
+                  label: formState.selectedBarangay != null
+                      ? 'Barangay ${formState.selectedBarangay}'
                       : AppStrings.tr('report_location_not_set', locale),
                 ),
               ],
             ),
             const SizedBox(height: 32),
-            ElevatedButton(
-              onPressed: _submitReport,
-              style: ElevatedButton.styleFrom(
-                backgroundColor: const Color(0xFF0F4C45),
-                foregroundColor: Colors.white,
-                padding: const EdgeInsets.symmetric(vertical: 16),
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(8),
-                ),
-                textStyle: const TextStyle(
-                  fontSize: 16,
-                  fontWeight: FontWeight.bold,
-                ),
-              ),
-              child: Text(AppStrings.tr('submit_report_button', locale)),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
-}
-
-class _IssueTypeCard extends StatelessWidget {
-  final String title;
-  final String subtitle;
-  final IconData icon;
-  final bool isSelected;
-  final VoidCallback onTap;
-
-  const _IssueTypeCard({
-    required this.title,
-    required this.subtitle,
-    required this.icon,
-    required this.isSelected,
-    required this.onTap,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return GestureDetector(
-      onTap: onTap,
-      child: Container(
-        padding: const EdgeInsets.all(16),
-        decoration: BoxDecoration(
-          color: isSelected ? Colors.grey.shade100 : Colors.grey.shade50,
-          border: Border.all(
-            color: isSelected ? const Color(0xFF0F4C45) : Colors.transparent,
-            width: 1.5,
-          ),
-          borderRadius: BorderRadius.circular(12),
-        ),
-        child: Row(
-          children: [
-            Container(
-              padding: const EdgeInsets.all(10),
-              decoration: BoxDecoration(
-                color: Colors.grey.shade200,
-                borderRadius: BorderRadius.circular(8),
-              ),
-              child: Icon(icon, size: 24, color: Colors.grey.shade700),
-            ),
-            const SizedBox(width: 16),
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Text(
-                  title,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
+            SizedBox(
+              height: 56,
+              child: ElevatedButton(
+                key: const Key('submit_button'),
+                onPressed: formState.isLoading ? null : _submitReport,
+                style: ElevatedButton.styleFrom(
+                  backgroundColor: const Color(0xFF0F4C45),
+                  foregroundColor: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(8),
+                  ),
+                  textStyle: const TextStyle(
                     fontSize: 16,
-                    color: Colors.black87,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
-                Text(
-                  subtitle,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
-                ),
-              ],
+                child: formState.isLoading
+                    ? const SizedBox(
+                        height: 24,
+                        width: 24,
+                        child: CircularProgressIndicator(
+                          color: Colors.white,
+                          strokeWidth: 2,
+                        ),
+                      )
+                    : Text(AppStrings.tr('submit_report_button', locale)),
+              ),
             ),
           ],
         ),
-      ),
-    );
-  }
-}
-
-class _InfoChip extends StatelessWidget {
-  final IconData icon;
-  final String label;
-
-  const _InfoChip({required this.icon, required this.label});
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 8),
-      decoration: BoxDecoration(
-        color: Colors.grey.shade200,
-        borderRadius: BorderRadius.circular(20),
-      ),
-      child: Row(
-        children: [
-          Icon(icon, size: 14, color: Colors.black54),
-          const SizedBox(width: 6),
-          Text(
-            label,
-            style: const TextStyle(fontSize: 12, color: Colors.black87),
-          ),
-        ],
       ),
     );
   }
