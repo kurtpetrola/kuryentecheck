@@ -45,16 +45,24 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     final locale = ref.read(languageProvider);
     final controller = ref.read(reportFormControllerProvider.notifier);
 
-    final success = await controller.submitReport();
+    final result = await controller.submitReport();
 
     if (!mounted) return;
 
-    if (success) {
+    if (result == 'sent') {
       _notesController.clear();
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppStrings.tr('report_snackbar_success', locale)),
           backgroundColor: const Color(0xFF0F4C45),
+        ),
+      );
+    } else if (result == 'queued') {
+      _notesController.clear();
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Report queued (offline). Will send when online.'),
+          backgroundColor: Colors.orange,
         ),
       );
     } else {
