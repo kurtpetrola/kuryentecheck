@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import '../../services/offline_report_service.dart';
 import '../../services/report_service.dart';
+import '../../shared/exceptions/app_exception.dart';
 
 class ReportFormState {
   final String? selectedBarangay;
@@ -94,7 +95,11 @@ class ReportFormController extends Notifier<ReportFormState> {
       state = ReportFormState();
       return 'sent';
     } catch (e) {
-      state = state.copyWith(isLoading: false, error: e.toString());
+      String errorMessage = e.toString();
+      if (e is AppException) {
+        errorMessage = e.message;
+      }
+      state = state.copyWith(isLoading: false, error: errorMessage);
       return 'error';
     }
   }

@@ -5,6 +5,7 @@ import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../services/auth_service.dart';
+import '../../shared/exceptions/app_exception.dart';
 
 class ForgotPasswordScreen extends ConsumerStatefulWidget {
   const ForgotPasswordScreen({super.key});
@@ -46,8 +47,15 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         _emailController.clear();
       });
     } catch (e) {
+      String msg = e.toString();
+      if (e is AppException) {
+        msg = e.message;
+      } else {
+        msg = msg.replaceAll('Exception: ', '');
+      }
+
       setState(() {
-        _message = e.toString().replaceAll('Exception: ', '');
+        _message = msg;
         _isError = true;
       });
     } finally {

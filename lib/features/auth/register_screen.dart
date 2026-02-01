@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
 import '../../services/auth_service.dart';
+import '../../shared/exceptions/app_exception.dart';
 import '../../shared/widgets/auth_header.dart';
 import '../../shared/widgets/custom_text_field.dart';
 import '../../shared/widgets/primary_button.dart';
@@ -92,8 +93,15 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
         context.go('/report'); // Navigate to home on success
       }
     } catch (e) {
+      String msg = e.toString();
+      if (e is AppException) {
+        msg = e.message;
+      } else {
+        msg = msg.replaceAll('Exception: ', '');
+      }
+
       setState(() {
-        _errorMessage = e.toString().replaceAll('Exception: ', '');
+        _errorMessage = msg;
       });
     } finally {
       if (mounted) {
