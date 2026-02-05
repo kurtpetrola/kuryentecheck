@@ -19,11 +19,13 @@ import 'scaffold_with_navbar.dart';
 class AuthNotifier extends ChangeNotifier {
   AuthNotifier(this._ref) {
     // Listen to auth state changes
-    _ref.listen(authStateProvider, (_, _) {
+    // ignore: unnecessary_underscores
+    _ref.listen(authStateProvider, (_, __) {
       notifyListeners();
     });
     // Listen to role changes
-    _ref.listen(userRoleProvider, (_, _) {
+    // ignore: unnecessary_underscores
+    _ref.listen(userRoleProvider, (_, __) {
       notifyListeners();
     });
   }
