@@ -1,0 +1,88 @@
+rules_version = '2';
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+
+    // ===== HELPER FUNCTIONS =====
+
+    // Check if the user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+
+    // Check if the user is accessing their own document
+    function isOwner(userId) {
+      return isAuthenticated() && request.auth.uid == userId;
+    }
+
+    // Get the user's role from their profile
+    function getUserRole() {
+      return get(/databases/$(database)/documents/users/$(request.auth.uid)).data.role;
+    }
+
+    // Check if the user is an admin
+    function isAdmin() {
+      return isAuthenticated() && getUserRole() == 'admin';
+    }
+
+    // ===== USERS COLLECTION =====
+    match /users/{userId} {
+
+      // Allow users to read their own profile
+      // Allow authenticated users to query by email (for password reset check)
+      allow read: if isOwner(userId)
+                  || (isAuthenticated() && resource.data.email == request.auth.token.email);
+
+      // Allow users to create their own profile during registration
+      allow create: if isOwner(userId)
+                    && request.resource.data.role == 'resident'
+                    && request.resource.data.keys().hasAll(['uid', 'email', 'displayName', 'barangay', 'phoneNumber', 'role', 'createdAt']);
+
+      // Allow users to update their own profile (but not change role)
+      allow update: if isOwner(userId)
+                    && request.resource.data.role == resource.data.role;
+
+      // Prevent deletion of user profiles
+      allow delete: if false;
+    }
+
+    // ===== REPORTS COLLECTION =====
+    match /reports/{reportId} {
+
+      // Allow all authenticated users to read reports
+      allow read: if isAuthenticated();
+
+      // Allow authenticated users to create reports
+      allow create: if isAuthenticated()
+                    && request.resource.data.userId == request.auth.uid
+                    && request.resource.data.status == 'Pending'
+                    && request.resource.data.upvotes == 0
+                    && request.resource.data.likedBy == [];
+
+      // Allow updates for:
+      // 1. Upvoting (any authenticated user)
+      // 2. Status changes (admin only)
+      allow update: if isAuthenticated() && (
+        // Case 1: User is toggling their own upvote
+        (
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes', 'likedBy'])
+        )
+        ||
+        // Case 2: Admin is updating the status
+        (
+          isAdmin() &&
+          request.resource.data.diff(resource.data).affectedKeys().hasOnly(['status'])
+        )
+      );
+
+      // Prevent deletion of reports
+      allow delete: if false;
+    }
+
+    // ===== DEFAULT DENY =====
+    // Any other collections are denied by default
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
