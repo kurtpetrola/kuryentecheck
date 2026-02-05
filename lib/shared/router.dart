@@ -15,62 +15,107 @@ import '../services/auth_service.dart';
 import 'onboarding_screen.dart';
 import 'scaffold_with_navbar.dart';
 
+/// A ChangeNotifier that listens to auth and role changes to trigger router refresh
+class AuthNotifier extends ChangeNotifier {
+  AuthNotifier(this._ref) {
+    // Listen to auth state changes
+    _ref.listen(authStateProvider, (_, _) {
+      notifyListeners();
+    });
+    // Listen to role changes
+    _ref.listen(userRoleProvider, (_, _) {
+      notifyListeners();
+    });
+  }
+
+  final Ref _ref;
+}
+
+/// Provider for the auth notifier - used by GoRouter's refreshListenable
+final authNotifierProvider = Provider<AuthNotifier>((ref) {
+  return AuthNotifier(ref);
+});
+
+/// Keep navigator key as a constant to prevent router recreation
+final _rootNavigatorKey = GlobalKey<NavigatorState>();
+
 final routerProvider = Provider<GoRouter>((ref) {
-  final authState = ref.watch(authStateProvider);
-  final userRole = ref.watch(userRoleProvider);
-  final rootNavigatorKey = GlobalKey<NavigatorState>();
+  final authNotifier = ref.watch(authNotifierProvider);
 
   return GoRouter(
-    navigatorKey: rootNavigatorKey,
-    initialLocation: '/report',
+    navigatorKey: _rootNavigatorKey,
+    initialLocation: '/login',
+    refreshListenable: authNotifier,
     redirect: (context, state) async {
+      final authState = ref.read(authStateProvider);
+      final userRole = ref.read(userRoleProvider);
+
       final prefs = await SharedPreferences.getInstance();
       final hasSeenOnboarding = prefs.getBool('hasSeenOnboarding') ?? false;
-      final isLoggedIn = authState.value != null;
-      final isLoggingIn =
-          state.uri.toString() == '/login' ||
-          state.uri.toString() == '/register' ||
-          state.uri.toString() == '/forgot-password';
+      final currentPath = state.uri.toString();
+      final isAuthPage =
+          currentPath == '/login' ||
+          currentPath == '/register' ||
+          currentPath == '/forgot-password';
 
       // 1. Onboarding Check
       if (!hasSeenOnboarding) {
-        if (state.uri.toString() != '/onboarding') {
+        if (currentPath != '/onboarding') {
           return '/onboarding';
         }
-        return null; // Let them stay on onboarding
+        return null;
       }
 
-      // 2. Auth Check
-      if (!isLoggedIn && !isLoggingIn) {
-        if (state.uri.toString() != '/onboarding') {
+      // 2. Auth state still loading - show loading screen
+      if (authState.isLoading) {
+        if (currentPath != '/auth-loading') {
+          return '/auth-loading';
+        }
+        return null;
+      }
+
+      final isLoggedIn = authState.value != null;
+
+      // 3. Not logged in - redirect to login
+      if (!isLoggedIn) {
+        if (!isAuthPage && currentPath != '/onboarding') {
           return '/login';
         }
+        return null;
       }
 
-      // 3. Login/Redirect Logic
-      if (isLoggedIn) {
-        // Wait for role to load if it's null but user is logged in
-        // (StreamProvider might be loading initial value)
-        // If snapshot is loading, we might want to wait or show splash, but for simplicity:
-        final role = userRole.value;
-
-        if (role == 'admin') {
-          if (state.uri.toString() != '/admin') {
-            return '/admin';
-          }
-          return null;
+      // 4. User is logged in but role still loading - show loading screen
+      if (userRole.isLoading) {
+        if (currentPath != '/auth-loading') {
+          return '/auth-loading';
         }
+        return null;
+      }
 
-        // If resident
-        if (isLoggingIn || state.uri.toString() == '/admin') {
-          // Redirect away from login pages OR admin page if not admin
-          return '/report';
+      final role = userRole.value;
+
+      // 5. Admin routing
+      if (role == 'admin') {
+        if (currentPath != '/admin') {
+          return '/admin';
         }
+        return null;
+      }
+
+      // 6. Resident routing - redirect away from auth pages, admin, and loading
+      if (isAuthPage ||
+          currentPath == '/admin' ||
+          currentPath == '/auth-loading') {
+        return '/report';
       }
 
       return null;
     },
     routes: [
+      GoRoute(
+        path: '/auth-loading',
+        builder: (context, state) => const _AuthLoadingScreen(),
+      ),
       GoRoute(
         path: '/admin',
         builder: (context, state) => const AdminDashboardScreen(),
@@ -131,6 +176,28 @@ final routerProvider = Provider<GoRouter>((ref) {
     errorBuilder: (context, state) => const _ErrorRedirect(),
   );
 });
+
+/// Loading screen shown during auth state transitions
+class _AuthLoadingScreen extends StatelessWidget {
+  const _AuthLoadingScreen();
+
+  @override
+  Widget build(BuildContext context) {
+    return const Scaffold(
+      backgroundColor: Color(0xFF0F4C45),
+      body: Center(
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            Icon(Icons.offline_bolt, size: 80, color: Colors.white),
+            SizedBox(height: 24),
+            CircularProgressIndicator(color: Colors.white),
+          ],
+        ),
+      ),
+    );
+  }
+}
 
 class _ErrorRedirect extends StatefulWidget {
   const _ErrorRedirect();
