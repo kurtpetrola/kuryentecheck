@@ -1,7 +1,7 @@
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
+import 'package:kuryente_check/data/services/auth_service.dart';
 import 'package:kuryente_check/main.dart';
-import 'package:kuryente_check/services/auth_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 void main() {

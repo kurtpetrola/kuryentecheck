@@ -39,6 +39,17 @@
 
 ## 📂 Project Structure
 
-- `lib/features/`: Feature-based architecture (Admin, Auth, Feed, Map, Profile, Report).
-- `lib/services/`: Core business logic (AuthService, ReportService, NotificationService, OfflineReportService, SyncService, LanguageProvider).
-- `lib/shared/`: Reusable widgets, constants, utilities, and router configuration.
+The app follows a **strict layered architecture**:
+
+- `lib/presentation/` — UI layer
+  - `screens/` — All app screens (Login, Register, Feed, Map, Report, Admin Dashboard, etc.)
+  - `widgets/` — Reusable UI components (AuthHeader, CustomTextField, PrimaryButton, etc.)
+  - `providers/` — Riverpod controllers and state providers (ReportController, LanguageProvider)
+- `lib/data/` — Data layer
+  - `services/` — Backend and business logic (AuthService, ReportService, NotificationService, SyncService, OfflineReportService)
+  - `models/` — Data definitions (BarangayData)
+- `lib/core/` — App-wide utilities
+  - `constants/` — App strings and configuration constants
+  - `exceptions/` — Custom exception classes
+  - `utils/` — Helper utilities (error message formatting)
+  - `router/` — GoRouter configuration

@@ -8,10 +8,10 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../services/language_provider.dart';
-import '../../services/report_service.dart';
-import '../../shared/app_strings.dart';
-import '../../shared/barangay_data.dart';
+import '../../core/constants/app_strings.dart';
+import '../../data/models/barangay_data.dart';
+import '../../data/services/report_service.dart';
+import '../providers/language_provider.dart';
 
 class MapScreen extends ConsumerStatefulWidget {
   const MapScreen({super.key});

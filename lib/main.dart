@@ -6,12 +6,12 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/router/router.dart';
+import 'data/services/notification_service.dart';
+import 'data/services/sync_service.dart';
 import 'firebase_options.dart';
-import 'services/language_provider.dart';
-import 'services/notification_service.dart';
-import 'services/sync_service.dart';
-import 'shared/notification_listener_wrapper.dart';
-import 'shared/router.dart';
+import 'presentation/providers/language_provider.dart';
+import 'presentation/widgets/notification_listener_wrapper.dart';
 
 void main() async {
   // Ensure Flutter bindings are initialized before calling async methods

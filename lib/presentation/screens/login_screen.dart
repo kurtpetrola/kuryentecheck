@@ -4,11 +4,11 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../services/auth_service.dart';
-import '../../shared/exceptions/app_exception.dart';
-import '../../shared/widgets/auth_header.dart';
-import '../../shared/widgets/custom_text_field.dart';
-import '../../shared/widgets/primary_button.dart';
+import '../../core/exceptions/app_exception.dart';
+import '../../data/services/auth_service.dart';
+import '../widgets/auth_header.dart';
+import '../widgets/custom_text_field.dart';
+import '../widgets/primary_button.dart';
 
 class LoginScreen extends ConsumerStatefulWidget {
   const LoginScreen({super.key});
