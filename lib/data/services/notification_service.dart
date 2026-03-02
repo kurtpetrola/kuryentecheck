@@ -1,5 +1,6 @@
-import 'package:flutter/material.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+import '../../core/constants/app_colors.dart';
 
 /// Singleton service managing local push notifications for the app
 class NotificationService {
@@ -55,7 +56,7 @@ class NotificationService {
           importance: Importance.max,
           priority: Priority.high,
           showWhen: true,
-          color: Color(0xFF0F4C45),
+          color: AppColors.primary,
         );
 
     const NotificationDetails platformChannelSpecifics = NotificationDetails(

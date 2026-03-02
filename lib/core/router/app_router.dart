@@ -14,6 +14,7 @@ import '../../presentation/screens/profile_screen.dart';
 import '../../presentation/screens/register_screen.dart';
 import '../../presentation/screens/report_screen.dart';
 import '../../presentation/widgets/scaffold_with_navbar.dart';
+import '../constants/app_colors.dart';
 
 /// A ChangeNotifier that listens to auth and role changes to trigger router refresh
 class AuthNotifier extends ChangeNotifier {
@@ -187,14 +188,14 @@ class _AuthLoadingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Scaffold(
-      backgroundColor: Color(0xFF0F4C45),
+      backgroundColor: AppColors.primary,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
-            Icon(Icons.offline_bolt, size: 80, color: Colors.white),
+            Icon(Icons.offline_bolt, size: 80, color: AppColors.white),
             SizedBox(height: 24),
-            CircularProgressIndicator(color: Colors.white),
+            CircularProgressIndicator(color: AppColors.white),
           ],
         ),
       ),

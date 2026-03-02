@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:latlong2/latlong.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../data/models/barangay_data.dart';
 import '../../data/services/report_service.dart';
@@ -80,22 +81,22 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                           (random.nextDouble() - 0.5) * 0.004;
 
                       // Assign marker color and icon based on severity of issue type
-                      Color color = Colors.orange;
+                      Color color = AppColors.warning;
                       IconData icon = LucideIcons.alertCircle;
                       if (issueType == 'Total Blackout') {
-                        color = Colors.red;
+                        color = AppColors.error;
                         icon = LucideIcons.zapOff;
                       } else if (issueType == 'Low Voltage') {
-                        color = Colors.amber;
+                        color = AppColors.amber;
                         icon = LucideIcons.activity;
                       } else if (issueType == 'Flickering Lights') {
-                        color = Colors.yellow.shade800;
+                        color = AppColors.warning;
                         icon = LucideIcons.zap;
                       }
 
                       // Visually distinct verified/resolved reports
                       if (status == 'Resolved') {
-                        color = Colors.green;
+                        color = AppColors.success;
                       }
 
                       markers.add(
@@ -121,18 +122,24 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                                 color: color.withValues(alpha: 0.9),
                                 shape: BoxShape.circle,
                                 border: Border.all(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   width: 2,
                                 ),
                                 boxShadow: [
                                   BoxShadow(
-                                    color: Colors.black.withValues(alpha: 0.3),
+                                    color: AppColors.black.withValues(
+                                      alpha: 0.3,
+                                    ),
                                     blurRadius: 4,
                                     offset: const Offset(0, 2),
                                   ),
                                 ],
                               ),
-                              child: Icon(icon, color: Colors.white, size: 20),
+                              child: Icon(
+                                icon,
+                                color: AppColors.white,
+                                size: 20,
+                              ),
                             ),
                           ),
                         ),
@@ -159,11 +166,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   vertical: 8,
                 ),
                 decoration: BoxDecoration(
-                  color: Colors.white,
+                  color: AppColors.white,
                   borderRadius: BorderRadius.circular(20),
                   boxShadow: [
                     BoxShadow(
-                      color: Colors.black.withValues(alpha: 0.1),
+                      color: AppColors.black.withValues(alpha: 0.1),
                       blurRadius: 8,
                       offset: const Offset(0, 2),
                     ),
@@ -173,17 +180,17 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                   mainAxisSize: MainAxisSize.min,
                   children: [
                     _LegendItem(
-                      color: Colors.red,
+                      color: AppColors.error,
                       label: AppStrings.tr('map_legend_blackout', locale),
                     ),
                     const SizedBox(width: 12),
                     _LegendItem(
-                      color: Colors.amber,
+                      color: AppColors.amber,
                       label: AppStrings.tr('map_legend_low_voltage', locale),
                     ),
                     const SizedBox(width: 12),
                     _LegendItem(
-                      color: Colors.yellow.shade800,
+                      color: AppColors.warning,
                       label: AppStrings.tr('map_legend_flickering', locale),
                     ),
                   ],
@@ -235,16 +242,16 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                     ),
                     decoration: BoxDecoration(
                       color: status == 'Resolved'
-                          ? Colors.green.shade100
-                          : Colors.orange.shade100,
+                          ? AppColors.successLight
+                          : AppColors.warning.withValues(alpha: 0.1),
                       borderRadius: BorderRadius.circular(8),
                     ),
                     child: Text(
                       status,
                       style: TextStyle(
                         color: status == 'Resolved'
-                            ? Colors.green.shade800
-                            : Colors.orange.shade800,
+                            ? AppColors.success
+                            : AppColors.warning,
                         fontWeight: FontWeight.bold,
                         fontSize: 12,
                       ),
@@ -255,7 +262,11 @@ class _MapScreenState extends ConsumerState<MapScreen> {
               const SizedBox(height: 8),
               Row(
                 children: [
-                  const Icon(LucideIcons.mapPin, size: 16, color: Colors.grey),
+                  const Icon(
+                    LucideIcons.mapPin,
+                    size: 16,
+                    color: AppColors.grey,
+                  ),
                   const SizedBox(width: 4),
                   Text(
                     'Barangay $barangay',
@@ -267,11 +278,15 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                 const SizedBox(height: 4),
                 Row(
                   children: [
-                    const Icon(LucideIcons.clock, size: 16, color: Colors.grey),
+                    const Icon(
+                      LucideIcons.clock,
+                      size: 16,
+                      color: AppColors.grey,
+                    ),
                     const SizedBox(width: 4),
                     Text(
                       DateFormat.yMMMd().add_jm().format(timestamp.toDate()),
-                      style: const TextStyle(color: Colors.grey),
+                      style: const TextStyle(color: AppColors.grey),
                     ),
                   ],
                 ),

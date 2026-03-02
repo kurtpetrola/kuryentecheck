@@ -6,6 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import 'core/constants/app_colors.dart';
 import 'core/router/app_router.dart';
 import 'data/services/notification_service.dart';
 import 'data/services/sync_service.dart';
@@ -72,14 +73,14 @@ class MyApp extends ConsumerWidget {
       debugShowCheckedModeBanner: false,
       theme: ThemeData(
         colorScheme: ColorScheme.fromSeed(
-          seedColor: const Color(0xFF0F4C45),
-          primary: const Color(0xFF0F4C45),
-          surface: const Color(0xFFFAFAFA),
+          seedColor: AppColors.primary,
+          primary: AppColors.primary,
+          surface: AppColors.background,
         ),
-        scaffoldBackgroundColor: const Color(0xFFFAFAFA),
+        scaffoldBackgroundColor: AppColors.background,
         appBarTheme: const AppBarTheme(
-          backgroundColor: Color(0xFF0F4C45),
-          foregroundColor: Colors.white,
+          backgroundColor: AppColors.primary,
+          foregroundColor: AppColors.white,
           elevation: 0,
         ),
         useMaterial3: true,

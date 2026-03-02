@@ -3,6 +3,8 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+import '../../core/constants/app_colors.dart';
+
 /// Introductory screens explaining app features to new users
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
@@ -50,7 +52,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       body: SafeArea(
         child: Column(
           children: [
@@ -88,7 +90,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             style: GoogleFonts.inter(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
-                              color: const Color(0xFF0F4C45),
+                              color: AppColors.primary,
                             ),
                             textAlign: TextAlign.center,
                           ),
@@ -97,7 +99,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                             _contents[index].description,
                             style: GoogleFonts.inter(
                               fontSize: 16,
-                              color: Colors.grey[600],
+                              color: AppColors.grey600,
                               height: 1.5,
                             ),
                             textAlign: TextAlign.center,
@@ -124,8 +126,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                         width: _currentPage == index ? 24 : 8,
                         decoration: BoxDecoration(
                           color: _currentPage == index
-                              ? const Color(0xFF0F4C45)
-                              : Colors.grey[300],
+                              ? AppColors.primary
+                              : AppColors.grey300,
                           borderRadius: BorderRadius.circular(4),
                         ),
                       ),
@@ -144,8 +146,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                       }
                     },
                     style: ElevatedButton.styleFrom(
-                      backgroundColor: const Color(0xFF0F4C45),
-                      foregroundColor: Colors.white,
+                      backgroundColor: AppColors.primary,
+                      foregroundColor: AppColors.white,
                       padding: const EdgeInsets.symmetric(
                         horizontal: 24,
                         vertical: 12,
