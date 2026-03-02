@@ -85,26 +85,9 @@ class AuthService {
     }
   }
 
-  /// Sends a password reset email after verifying the user exists in Firestore
+  /// Sends a password reset email via Firebase Auth
   Future<void> sendPasswordResetEmail(String email) async {
     try {
-      // Check if user exists in our database first
-      // This is needed because Firebase sendPasswordResetEmail doesn't always throw
-      // for non-existent emails for security reasons (to prevent enumeration).
-      // However, the client specifically requested this check.
-      final userQuery = await _firestore
-          .collection('users')
-          .where('email', isEqualTo: email)
-          .limit(1)
-          .get();
-
-      if (userQuery.docs.isEmpty) {
-        throw AuthException(
-          'No user found with this email.',
-          code: 'user-not-found',
-        );
-      }
-
       await _auth.sendPasswordResetEmail(email: email);
     } on FirebaseAuthException catch (e) {
       throw AuthException(
