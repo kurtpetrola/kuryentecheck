@@ -4,6 +4,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/exceptions/app_exception.dart';
 import '../../data/services/auth_service.dart';
 import '../widgets/auth_header.dart';
@@ -75,7 +76,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      backgroundColor: Colors.white,
+      backgroundColor: AppColors.white,
       body: SafeArea(
         child: SingleChildScrollView(
           padding: const EdgeInsets.all(24.0),
@@ -90,7 +91,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                   child: Icon(
                     Icons.offline_bolt,
                     size: 80,
-                    color: Color(0xFF0F4C45),
+                    color: AppColors.primary,
                   ),
                 ),
                 const SizedBox(height: 24),
@@ -105,15 +106,13 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     margin: const EdgeInsets.only(bottom: 16),
                     padding: const EdgeInsets.all(12),
                     decoration: BoxDecoration(
-                      color: Colors.red.withValues(alpha: 0.1),
+                      color: AppColors.errorLight,
                       borderRadius: BorderRadius.circular(8),
-                      border: Border.all(
-                        color: Colors.red.withValues(alpha: 0.3),
-                      ),
+                      border: Border.all(color: AppColors.errorBorder),
                     ),
                     child: Text(
                       _errorMessage!,
-                      style: const TextStyle(color: Colors.red),
+                      style: const TextStyle(color: AppColors.error),
                     ),
                   ),
 
@@ -149,7 +148,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                     child: Text(
                       'Forgot Password?',
                       style: GoogleFonts.inter(
-                        color: const Color(0xFF0F4C45),
+                        color: AppColors.primary,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
@@ -165,9 +164,9 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
-                    Text(
+                    const Text(
                       "Don't have an account? ",
-                      style: TextStyle(color: Colors.grey[600]),
+                      style: TextStyle(color: AppColors.grey600),
                     ),
                     TextButton(
                       onPressed: () {
@@ -176,7 +175,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
                       child: const Text(
                         'Register',
                         style: TextStyle(
-                          color: Color(0xFF0F4C45),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

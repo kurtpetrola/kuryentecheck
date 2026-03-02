@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+import '../../core/constants/app_colors.dart';
+
 /// A styled, selectable card widget for choosing report issue categories
 class IssueTypeCard extends StatelessWidget {
   final String title;
@@ -24,9 +26,9 @@ class IssueTypeCard extends StatelessWidget {
       child: Container(
         padding: const EdgeInsets.all(16),
         decoration: BoxDecoration(
-          color: isSelected ? Colors.grey.shade100 : Colors.grey.shade50,
+          color: isSelected ? AppColors.grey100 : AppColors.grey50,
           border: Border.all(
-            color: isSelected ? const Color(0xFF0F4C45) : Colors.transparent,
+            color: isSelected ? AppColors.primary : AppColors.transparent,
             width: 1.5,
           ),
           borderRadius: BorderRadius.circular(12),
@@ -36,10 +38,10 @@ class IssueTypeCard extends StatelessWidget {
             Container(
               padding: const EdgeInsets.all(10),
               decoration: BoxDecoration(
-                color: Colors.grey.shade200,
+                color: AppColors.grey200,
                 borderRadius: BorderRadius.circular(8),
               ),
-              child: Icon(icon, size: 24, color: Colors.grey.shade700),
+              child: Icon(icon, size: 24, color: AppColors.grey700),
             ),
             const SizedBox(width: 16),
             Column(
@@ -50,12 +52,12 @@ class IssueTypeCard extends StatelessWidget {
                   style: const TextStyle(
                     fontWeight: FontWeight.bold,
                     fontSize: 16,
-                    color: Colors.black87,
+                    color: AppColors.black87,
                   ),
                 ),
                 Text(
                   subtitle,
-                  style: const TextStyle(fontSize: 12, color: Colors.grey),
+                  style: const TextStyle(fontSize: 12, color: AppColors.grey),
                 ),
               ],
             ),

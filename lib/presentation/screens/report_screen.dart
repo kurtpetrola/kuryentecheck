@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_constants.dart';
 import '../../core/constants/app_strings.dart';
 import '../providers/language_provider.dart';
@@ -56,7 +57,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
           content: Text(AppStrings.tr('report_snackbar_success', locale)),
-          backgroundColor: const Color(0xFF0F4C45),
+          backgroundColor: AppColors.primary,
         ),
       );
     } else if (result == 'queued') {
@@ -64,7 +65,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
       ScaffoldMessenger.of(context).showSnackBar(
         const SnackBar(
           content: Text('Report queued (offline). Will send when online.'),
-          backgroundColor: Colors.orange,
+          backgroundColor: AppColors.warning,
         ),
       );
     } else {
@@ -76,7 +77,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text(errorMessage), backgroundColor: Colors.red),
+        SnackBar(content: Text(errorMessage), backgroundColor: AppColors.error),
       );
     }
   }
@@ -117,11 +118,11 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 hintText: AppStrings.tr('report_form_barangay_hint', locale),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+                  borderSide: const BorderSide(color: AppColors.grey300),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+                  borderSide: const BorderSide(color: AppColors.grey300),
                 ),
                 contentPadding: const EdgeInsets.symmetric(
                   horizontal: 12,
@@ -177,11 +178,11 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 hintText: AppStrings.tr('report_form_notes_hint', locale),
                 border: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+                  borderSide: const BorderSide(color: AppColors.grey300),
                 ),
                 enabledBorder: OutlineInputBorder(
                   borderRadius: BorderRadius.circular(8),
-                  borderSide: BorderSide(color: Colors.grey.shade300),
+                  borderSide: const BorderSide(color: AppColors.grey300),
                 ),
               ),
             ),
@@ -213,8 +214,8 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                 key: const Key('submit_button'),
                 onPressed: formState.isLoading ? null : _submitReport,
                 style: ElevatedButton.styleFrom(
-                  backgroundColor: const Color(0xFF0F4C45),
-                  foregroundColor: Colors.white,
+                  backgroundColor: AppColors.primary,
+                  foregroundColor: AppColors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(8),
                   ),
@@ -228,7 +229,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
                         height: 24,
                         width: 24,
                         child: CircularProgressIndicator(
-                          color: Colors.white,
+                          color: AppColors.white,
                           strokeWidth: 2,
                         ),
                       )

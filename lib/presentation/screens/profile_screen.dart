@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../data/services/auth_service.dart';
 import '../providers/language_provider.dart';
@@ -17,7 +18,7 @@ class ProfileScreen extends ConsumerWidget {
     final locale = ref.watch(languageProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey.shade50,
+      backgroundColor: AppColors.grey50,
       appBar: AppBar(
         title: Row(
           children: [
@@ -47,7 +48,7 @@ class ProfileScreen extends ConsumerWidget {
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         AppStrings.tr('cancel', locale),
-                        style: const TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: AppColors.grey),
                       ),
                     ),
                     TextButton(
@@ -58,7 +59,7 @@ class ProfileScreen extends ConsumerWidget {
                       child: Text(
                         AppStrings.tr('sign_out', locale),
                         style: const TextStyle(
-                          color: Color(0xFF0F4C45),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -114,9 +115,9 @@ class ProfileScreen extends ConsumerWidget {
                         padding: const EdgeInsets.all(32),
                         width: double.infinity,
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: AppColors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.grey.shade200),
+                          border: Border.all(color: AppColors.grey200),
                         ),
                         child: Column(
                           children: [
@@ -124,14 +125,14 @@ class ProfileScreen extends ConsumerWidget {
                               width: 80,
                               height: 80,
                               decoration: const BoxDecoration(
-                                color: Color(0xFF0F4C45),
+                                color: AppColors.primary,
                                 shape: BoxShape.circle,
                               ),
                               alignment: Alignment.center,
                               child: Text(
                                 initials,
                                 style: const TextStyle(
-                                  color: Colors.white,
+                                  color: AppColors.white,
                                   fontWeight: FontWeight.bold,
                                   fontSize: 24,
                                 ),
@@ -143,15 +144,15 @@ class ProfileScreen extends ConsumerWidget {
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 20,
-                                color: Colors.black87,
+                                color: AppColors.black87,
                               ),
                             ),
                             const SizedBox(height: 8),
                             Text(
                               user.email ?? '',
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 14,
-                                color: Colors.grey.shade600,
+                                color: AppColors.grey600,
                               ),
                             ),
                           ],
@@ -163,9 +164,9 @@ class ProfileScreen extends ConsumerWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: AppColors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.grey.shade200),
+                          border: Border.all(color: AppColors.grey200),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -175,7 +176,7 @@ class ProfileScreen extends ConsumerWidget {
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
-                                color: Colors.black87,
+                                color: AppColors.black87,
                               ),
                             ),
                             const SizedBox(height: 24),
@@ -210,9 +211,9 @@ class ProfileScreen extends ConsumerWidget {
                         width: double.infinity,
                         padding: const EdgeInsets.all(24),
                         decoration: BoxDecoration(
-                          color: Colors.white,
+                          color: AppColors.white,
                           borderRadius: BorderRadius.circular(16),
-                          border: Border.all(color: Colors.grey.shade200),
+                          border: Border.all(color: AppColors.grey200),
                         ),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
@@ -222,14 +223,14 @@ class ProfileScreen extends ConsumerWidget {
                               style: const TextStyle(
                                 fontWeight: FontWeight.bold,
                                 fontSize: 16,
-                                color: Colors.black87,
+                                color: AppColors.black87,
                               ),
                             ),
                             const SizedBox(height: 16),
                             Container(
                               width: double.infinity,
                               decoration: BoxDecoration(
-                                border: Border.all(color: Colors.grey.shade300),
+                                border: Border.all(color: AppColors.grey300),
                                 borderRadius: BorderRadius.circular(8),
                               ),
                               child: Row(
@@ -247,8 +248,8 @@ class ProfileScreen extends ConsumerWidget {
                                         ),
                                         decoration: BoxDecoration(
                                           color: locale.languageCode == 'en'
-                                              ? const Color(0xFF0F4C45)
-                                              : Colors.transparent,
+                                              ? AppColors.primary
+                                              : AppColors.transparent,
                                           // Highlight matching language option visually with border radius
                                           borderRadius: BorderRadius.horizontal(
                                             left: const Radius.circular(7),
@@ -262,8 +263,8 @@ class ProfileScreen extends ConsumerWidget {
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: locale.languageCode == 'en'
-                                                ? Colors.white
-                                                : Colors.black87,
+                                                ? AppColors.white
+                                                : AppColors.black87,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -283,8 +284,8 @@ class ProfileScreen extends ConsumerWidget {
                                         ),
                                         decoration: BoxDecoration(
                                           color: locale.languageCode == 'tl'
-                                              ? const Color(0xFF0F4C45)
-                                              : Colors.transparent,
+                                              ? AppColors.primary
+                                              : AppColors.transparent,
                                           borderRadius: BorderRadius.horizontal(
                                             right: const Radius.circular(7),
                                             left: locale.languageCode == 'tl'
@@ -297,8 +298,8 @@ class ProfileScreen extends ConsumerWidget {
                                           textAlign: TextAlign.center,
                                           style: TextStyle(
                                             color: locale.languageCode == 'tl'
-                                                ? Colors.white
-                                                : Colors.black87,
+                                                ? AppColors.white
+                                                : AppColors.black87,
                                             fontWeight: FontWeight.bold,
                                           ),
                                         ),
@@ -336,11 +337,11 @@ class _InfoRow extends StatelessWidget {
   Widget build(BuildContext context) {
     return Row(
       children: [
-        Icon(icon, size: 20, color: Colors.grey.shade600),
+        Icon(icon, size: 20, color: AppColors.grey600),
         const SizedBox(width: 12),
         Text(
           label,
-          style: TextStyle(color: Colors.grey.shade600, fontSize: 14),
+          style: const TextStyle(color: AppColors.grey600, fontSize: 14),
         ),
         const SizedBox(width: 8),
         Text(

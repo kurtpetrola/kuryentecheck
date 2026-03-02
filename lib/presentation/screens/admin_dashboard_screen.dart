@@ -4,6 +4,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../data/services/auth_service.dart';
 import '../../data/services/report_service.dart';
@@ -29,7 +30,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     final locale = ref.watch(languageProvider);
 
     return Scaffold(
-      backgroundColor: Colors.grey[50],
+      backgroundColor: AppColors.grey50,
       appBar: AppBar(
         title: const Text(
           'Command Center',
@@ -37,8 +38,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
         ),
         centerTitle: false,
         elevation: 0,
-        backgroundColor: Colors.white,
-        foregroundColor: const Color(0xFF0F4C45),
+        backgroundColor: AppColors.white,
+        foregroundColor: AppColors.primary,
         actions: [
           IconButton(
             icon: const Icon(LucideIcons.logOut),
@@ -57,7 +58,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                       onPressed: () => Navigator.pop(context),
                       child: Text(
                         AppStrings.tr('cancel', locale),
-                        style: const TextStyle(color: Colors.grey),
+                        style: const TextStyle(color: AppColors.grey),
                       ),
                     ),
                     TextButton(
@@ -68,7 +69,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                       child: Text(
                         AppStrings.tr('sign_out', locale),
                         style: const TextStyle(
-                          color: Color(0xFF0F4C45),
+                          color: AppColors.primary,
                           fontWeight: FontWeight.bold,
                         ),
                       ),
@@ -106,7 +107,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
             children: [
               // Stats Header
               Container(
-                color: Colors.white,
+                color: AppColors.white,
                 padding: const EdgeInsets.fromLTRB(16, 0, 16, 16),
                 child: Column(
                   children: [
@@ -116,7 +117,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                           child: _StatCard(
                             label: 'Pending',
                             count: pendingCount,
-                            color: Colors.orange,
+                            color: AppColors.warning,
                             icon: LucideIcons.alertCircle,
                           ),
                         ),
@@ -125,7 +126,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                           child: _StatCard(
                             label: 'Active',
                             count: ackCount,
-                            color: Colors.blue,
+                            color: AppColors.info,
                             icon: LucideIcons.hammer,
                           ),
                         ),
@@ -134,7 +135,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                           child: _StatCard(
                             label: 'Fixed',
                             count: resolvedCount,
-                            color: Colors.green,
+                            color: AppColors.success,
                             icon: LucideIcons.checkCircle,
                           ),
                         ),
@@ -186,15 +187,15 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                         child: Column(
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Icon(
+                            const Icon(
                               LucideIcons.clipboardList,
                               size: 48,
-                              color: Colors.grey[300],
+                              color: AppColors.grey300,
                             ),
                             const SizedBox(height: 16),
                             Text(
                               'No $_filterStatus reports',
-                              style: TextStyle(color: Colors.grey[500]),
+                              style: const TextStyle(color: AppColors.grey500),
                             ),
                           ],
                         ),
@@ -298,7 +299,7 @@ class _FilterTab extends StatelessWidget {
     return Padding(
       padding: const EdgeInsets.only(right: 8),
       child: Material(
-        color: isSelected ? const Color(0xFF0F4C45) : Colors.transparent,
+        color: isSelected ? AppColors.primary : AppColors.transparent,
         borderRadius: BorderRadius.circular(20),
         child: InkWell(
           onTap: onTap,
@@ -307,14 +308,14 @@ class _FilterTab extends StatelessWidget {
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
             decoration: BoxDecoration(
               border: Border.all(
-                color: isSelected ? Colors.transparent : Colors.grey.shade300,
+                color: isSelected ? AppColors.transparent : AppColors.grey300,
               ),
               borderRadius: BorderRadius.circular(20),
             ),
             child: Text(
               label,
               style: TextStyle(
-                color: isSelected ? Colors.white : Colors.black54,
+                color: isSelected ? AppColors.white : AppColors.black54,
                 fontWeight: isSelected ? FontWeight.bold : FontWeight.w500,
                 fontSize: 13,
               ),
@@ -348,9 +349,9 @@ class _AdminReportCard extends ConsumerWidget {
     final description = data['notes'] ?? '';
     final timestamp = (data['timestamp'] as Timestamp?)?.toDate();
 
-    Color statusColor = Colors.orange;
-    if (status == 'Acknowledged') statusColor = Colors.blue;
-    if (status == 'Resolved') statusColor = Colors.green;
+    Color statusColor = AppColors.warning;
+    if (status == 'Acknowledged') statusColor = AppColors.info;
+    if (status == 'Resolved') statusColor = AppColors.success;
 
     IconData issueIcon = LucideIcons.alertCircle;
     if (issueType == 'Total Blackout') issueIcon = LucideIcons.zapOff;
@@ -359,12 +360,12 @@ class _AdminReportCard extends ConsumerWidget {
 
     return Container(
       decoration: BoxDecoration(
-        color: Colors.white,
+        color: AppColors.white,
         borderRadius: BorderRadius.circular(12),
-        border: Border.all(color: Colors.grey.shade200),
+        border: Border.all(color: AppColors.grey200),
         boxShadow: [
           BoxShadow(
-            color: Colors.black.withValues(alpha: 0.02),
+            color: AppColors.black.withValues(alpha: 0.02),
             blurRadius: 4,
             offset: const Offset(0, 2),
           ),
@@ -381,14 +382,10 @@ class _AdminReportCard extends ConsumerWidget {
                 Container(
                   padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
-                    color: Colors.grey[50],
+                    color: AppColors.grey50,
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: Icon(
-                    issueIcon,
-                    color: const Color(0xFF0F4C45),
-                    size: 24,
-                  ),
+                  child: Icon(issueIcon, color: AppColors.primary, size: 24),
                 ),
                 const SizedBox(width: 12),
                 Expanded(
@@ -403,15 +400,15 @@ class _AdminReportCard extends ConsumerWidget {
                             style: const TextStyle(
                               fontSize: 12,
                               fontWeight: FontWeight.bold,
-                              color: Colors.grey,
+                              color: AppColors.grey,
                             ),
                           ),
                           if (timestamp != null)
                             Text(
                               DateFormat('MMM d, h:mm a').format(timestamp),
-                              style: TextStyle(
+                              style: const TextStyle(
                                 fontSize: 11,
-                                color: Colors.grey[400],
+                                color: AppColors.grey400,
                               ),
                             ),
                         ],
@@ -422,7 +419,7 @@ class _AdminReportCard extends ConsumerWidget {
                         style: const TextStyle(
                           fontSize: 16,
                           fontWeight: FontWeight.bold,
-                          color: Color(0xFF0F4C45),
+                          color: AppColors.primary,
                         ),
                       ),
                       if (description.isNotEmpty) ...[
@@ -431,7 +428,7 @@ class _AdminReportCard extends ConsumerWidget {
                           description,
                           style: const TextStyle(
                             fontSize: 13,
-                            color: Colors.black87,
+                            color: AppColors.black87,
                           ),
                           maxLines: 2,
                           overflow: TextOverflow.ellipsis,
@@ -465,7 +462,7 @@ class _AdminReportCard extends ConsumerWidget {
                     vertical: 2,
                   ),
                   decoration: BoxDecoration(
-                    color: Colors.white,
+                    color: AppColors.white,
                     borderRadius: BorderRadius.circular(4),
                     border: Border.all(
                       color: statusColor.withValues(alpha: 0.2),
@@ -508,7 +505,7 @@ class _AdminReportCard extends ConsumerWidget {
                             style: TextStyle(fontSize: 12),
                           ),
                           style: TextButton.styleFrom(
-                            foregroundColor: Colors.blue,
+                            foregroundColor: AppColors.info,
                           ),
                         ),
                       ),
@@ -525,8 +522,8 @@ class _AdminReportCard extends ConsumerWidget {
                             style: TextStyle(fontSize: 12),
                           ),
                           style: ElevatedButton.styleFrom(
-                            backgroundColor: Colors.green,
-                            foregroundColor: Colors.white,
+                            backgroundColor: AppColors.success,
+                            foregroundColor: AppColors.white,
                             elevation: 0,
                           ),
                         ),

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../data/services/auth_service.dart';
 import '../../data/services/report_service.dart';
@@ -67,7 +68,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                       prefixIcon: const Icon(LucideIcons.search),
                       border: OutlineInputBorder(
                         borderRadius: BorderRadius.circular(8),
-                        borderSide: BorderSide(color: Colors.grey.shade300),
+                        borderSide: const BorderSide(color: AppColors.grey300),
                       ),
                       contentPadding: const EdgeInsets.symmetric(vertical: 0),
                     ),
@@ -105,20 +106,20 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     decoration: BoxDecoration(
                       border: Border.all(
                         color: _filterStatus == 'All'
-                            ? Colors.grey.shade300
-                            : const Color(0xFF0F4C45),
+                            ? AppColors.grey300
+                            : AppColors.primary,
                       ),
                       borderRadius: BorderRadius.circular(8),
                       color: _filterStatus == 'All'
-                          ? Colors.transparent
-                          : const Color(0xFF0F4C45).withValues(alpha: 0.1),
+                          ? AppColors.transparent
+                          : AppColors.primaryLight,
                     ),
                     child: Icon(
                       LucideIcons.filter,
                       size: 20,
                       color: _filterStatus == 'All'
-                          ? Colors.black54
-                          : const Color(0xFF0F4C45),
+                          ? AppColors.black54
+                          : AppColors.primary,
                     ),
                   ),
                 ),
@@ -183,19 +184,19 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
 
                     // Map issue type to icon and color
                     IconData icon = LucideIcons.alertCircle;
-                    Color color = Colors.grey;
+                    Color color = AppColors.grey;
 
                     final issueType = data['issueType'] as String? ?? 'Unknown';
 
                     if (issueType == 'Total Blackout') {
                       icon = LucideIcons.zapOff;
-                      color = Colors.red;
+                      color = AppColors.error;
                     } else if (issueType == 'Low Voltage') {
                       icon = LucideIcons.activity;
-                      color = Colors.orange;
+                      color = AppColors.warning;
                     } else if (issueType == 'Flickering Lights') {
                       icon = LucideIcons.zap;
-                      color = Colors.amber;
+                      color = AppColors.amber;
                     }
 
                     final likedBy = List<String>.from(data['likedBy'] ?? []);
@@ -224,10 +225,10 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                             data['notes'] ?? 'No description provided.',
                         status: status,
                         statusColor: (data['status'] == 'Resolved')
-                            ? Colors.green
+                            ? AppColors.success
                             : ((data['status'] == 'Acknowledged')
-                                  ? Colors.blue
-                                  : Colors.orange),
+                                  ? AppColors.info
+                                  : AppColors.warning),
                         upvotes: data['upvotes'] ?? 0,
                         isLiked: isLiked,
                         onUpvote: () {
@@ -282,8 +283,8 @@ class _FeedCard extends StatelessWidget {
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
-        color: Colors.white,
-        border: Border.all(color: Colors.grey.shade200),
+        color: AppColors.white,
+        border: Border.all(color: AppColors.grey200),
         borderRadius: BorderRadius.circular(12),
       ),
       child: Column(
@@ -295,7 +296,7 @@ class _FeedCard extends StatelessWidget {
               Container(
                 padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
                 decoration: BoxDecoration(
-                  color: Colors.grey.shade200,
+                  color: AppColors.grey200,
                   borderRadius: BorderRadius.circular(4),
                 ),
                 child: Text(
@@ -308,7 +309,7 @@ class _FeedCard extends StatelessWidget {
               ),
               Text(
                 timeAgo,
-                style: const TextStyle(color: Colors.grey, fontSize: 12),
+                style: const TextStyle(color: AppColors.grey, fontSize: 12),
               ),
             ],
           ),
@@ -327,7 +328,7 @@ class _FeedCard extends StatelessWidget {
             ],
           ),
           const SizedBox(height: 8),
-          Text(description, style: const TextStyle(color: Colors.black87)),
+          Text(description, style: const TextStyle(color: AppColors.black87)),
           const SizedBox(height: 16),
           Row(
             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -358,13 +359,13 @@ class _FeedCard extends StatelessWidget {
                     Icon(
                       LucideIcons.thumbsUp,
                       size: 20,
-                      color: isLiked ? const Color(0xFF0F4C45) : Colors.grey,
+                      color: isLiked ? AppColors.primary : AppColors.grey,
                     ),
                     const SizedBox(width: 4),
                     Text(
                       upvotes.toString(),
                       style: TextStyle(
-                        color: isLiked ? const Color(0xFF0F4C45) : Colors.grey,
+                        color: isLiked ? AppColors.primary : AppColors.grey,
                         fontWeight: FontWeight.bold,
                       ),
                     ),

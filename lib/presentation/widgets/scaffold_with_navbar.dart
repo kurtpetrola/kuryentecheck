@@ -3,6 +3,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../providers/language_provider.dart';
 
@@ -20,22 +21,22 @@ class ScaffoldWithNavBar extends ConsumerWidget {
       body: navigationShell,
       bottomNavigationBar: NavigationBarTheme(
         data: NavigationBarThemeData(
-          indicatorColor: const Color(0xFF0F4C45),
+          indicatorColor: AppColors.primary,
           iconTheme: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
-              return const IconThemeData(color: Colors.white);
+              return const IconThemeData(color: AppColors.white);
             }
-            return const IconThemeData(color: Colors.grey);
+            return const IconThemeData(color: AppColors.grey);
           }),
           labelTextStyle: WidgetStateProperty.resolveWith((states) {
             if (states.contains(WidgetState.selected)) {
               return const TextStyle(
-                color: Color(0xFF0F4C45),
+                color: AppColors.primary,
                 fontWeight: FontWeight.bold,
                 fontSize: 12,
               );
             }
-            return const TextStyle(color: Colors.grey, fontSize: 12);
+            return const TextStyle(color: AppColors.grey, fontSize: 12);
           }),
         ),
         child: NavigationBar(
@@ -46,7 +47,7 @@ class ScaffoldWithNavBar extends ConsumerWidget {
               initialLocation: index == navigationShell.currentIndex,
             );
           },
-          backgroundColor: Colors.white,
+          backgroundColor: AppColors.white,
           destinations: [
             NavigationDestination(
               icon: const Icon(LucideIcons.home),
