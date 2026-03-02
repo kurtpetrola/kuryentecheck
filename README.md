@@ -1,8 +1,8 @@
-# KuryenteCheck
+# ✅ KuryenteCheck
 
 **KuryenteCheck** is a Crowd-Sourced Mobile App for Monitoring Electricity Outages and Voltage Fluctuations in Mangaldan, Pangasinan.
 
-## 📱 Features
+## ✨ Features
 
 ### For Residents (Users)
 
@@ -11,6 +11,7 @@
 - **Community Feed**: See what's happening in your area with a feed of recent reports.
 - **Real-time Notifications**: Get notified instantly when your report is **Acknowledged** or **Resolved** by an admin.
 - **Profile Management**: Track your submitted reports and toggle between English and Filipino languages.
+- **Offline Reports**: Draft reports offline and sync them when you regain connection.
 
 ### For Admins (CENPELCO)
 
@@ -18,7 +19,7 @@
 - **Status Management**: Filter reports by status (Pending, Acknowledged, Resolved).
 - **Actionable & Efficient**: Acknowledge valid reports and mark them as resolved once fixed, automatically notifying the affected resident.
 
-## 🛠️ Technology Stack
+## 💻 Tech Stack
 
 - **Framework**: [Flutter](https://flutter.dev) (Dart)
 - **State Management**: [Riverpod](https://riverpod.dev)
@@ -28,6 +29,7 @@
   - **Cloud Firestore**: Real-time database for users and reports.
 - **Maps**: [flutter_map](https://pub.dev/packages/flutter_map) (OpenStreetMap)
 - **Notifications**: [flutter_local_notifications](https://pub.dev/packages/flutter_local_notifications)
+- **Offline Capabilities**: Local caching and sync queues.
 - **Design**: Standardized "Dark Teal" theme (`#0F4C45`) with FontAwesome & Lucide icons.
 
 ## 🔐 Roles
@@ -37,6 +39,6 @@
 
 ## 📂 Project Structure
 
-- `lib/features/`: Feature-based architecture (Auth, Report, Feed, Map, Admin).
-- `lib/services/`: Core business logic (AuthService, ReportService, NotificationService).
-- `lib/shared/`: Reusable widgets and router configuration.
+- `lib/features/`: Feature-based architecture (Admin, Auth, Feed, Map, Profile, Report).
+- `lib/services/`: Core business logic (AuthService, ReportService, NotificationService, OfflineReportService, SyncService, LanguageProvider).
+- `lib/shared/`: Reusable widgets, constants, utilities, and router configuration.
