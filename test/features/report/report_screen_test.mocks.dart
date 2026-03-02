@@ -6,7 +6,7 @@
 import 'dart:async' as _i3;
 
 import 'package:cloud_firestore/cloud_firestore.dart' as _i4;
-import 'package:kuryente_check/services/report_service.dart' as _i2;
+import 'package:kuryente_check/data/services/report_service.dart' as _i2;
 import 'package:mockito/mockito.dart' as _i1;
 import 'package:shared_preferences/src/shared_preferences_legacy.dart' as _i5;
 

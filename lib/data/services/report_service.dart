@@ -1,8 +1,8 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
-import '../services/auth_service.dart';
-import '../shared/exceptions/app_exception.dart';
+import '../../core/exceptions/app_exception.dart';
+import 'auth_service.dart';
 
 final reportServiceProvider = Provider<ReportService>((ref) {
   return ReportService(FirebaseFirestore.instance, ref);

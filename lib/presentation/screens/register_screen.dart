@@ -1,14 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
-
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../services/auth_service.dart';
-import '../../shared/exceptions/app_exception.dart';
-import '../../shared/widgets/auth_header.dart';
-import '../../shared/widgets/custom_text_field.dart';
-import '../../shared/widgets/primary_button.dart';
+import '../../core/exceptions/app_exception.dart';
+import '../../data/services/auth_service.dart';
+import '../widgets/auth_header.dart';
+import '../widgets/custom_text_field.dart';
+import '../widgets/primary_button.dart';
 
 class RegisterScreen extends ConsumerStatefulWidget {
   const RegisterScreen({super.key});

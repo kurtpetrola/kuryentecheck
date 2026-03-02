@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
-import 'package:kuryente_check/features/report/report_screen.dart';
-import 'package:kuryente_check/services/language_provider.dart';
-import 'package:kuryente_check/services/report_service.dart';
+import 'package:kuryente_check/data/services/report_service.dart';
+import 'package:kuryente_check/presentation/providers/language_provider.dart';
+import 'package:kuryente_check/presentation/screens/report_screen.dart';
 import 'package:mockito/annotations.dart';
 import 'package:mockito/mockito.dart';
 import 'package:shared_preferences/shared_preferences.dart';

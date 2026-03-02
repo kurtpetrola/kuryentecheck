@@ -3,10 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
-import '../../services/auth_service.dart';
-import '../../services/language_provider.dart';
-import '../../services/report_service.dart';
-import '../../shared/app_strings.dart';
+import '../../core/constants/app_strings.dart';
+import '../../data/services/auth_service.dart';
+import '../../data/services/report_service.dart';
+import '../providers/language_provider.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});

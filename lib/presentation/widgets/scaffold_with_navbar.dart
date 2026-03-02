@@ -2,8 +2,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:lucide_icons/lucide_icons.dart';
-import '../services/language_provider.dart';
-import '../shared/app_strings.dart';
+
+import '../../core/constants/app_strings.dart';
+import '../providers/language_provider.dart';
 
 /// Main application scaffold with bottom navigation bar used by GoRouter
 class ScaffoldWithNavBar extends ConsumerWidget {

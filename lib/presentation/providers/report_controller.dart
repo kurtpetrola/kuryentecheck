@@ -1,8 +1,9 @@
 import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../services/offline_report_service.dart';
-import '../../services/report_service.dart';
-import '../../shared/exceptions/app_exception.dart';
+
+import '../../core/exceptions/app_exception.dart';
+import '../../data/services/offline_report_service.dart';
+import '../../data/services/report_service.dart';
 
 /// State representation for the report submission form
 class ReportFormState {

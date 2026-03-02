@@ -3,17 +3,17 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import '../features/admin/admin_dashboard_screen.dart';
-import '../features/auth/forgot_password_screen.dart';
-import '../features/auth/login_screen.dart';
-import '../features/auth/register_screen.dart';
-import '../features/feed/feed_screen.dart';
-import '../features/map/map_screen.dart';
-import '../features/profile/profile_screen.dart';
-import '../features/report/report_screen.dart';
-import '../services/auth_service.dart';
-import 'onboarding_screen.dart';
-import 'scaffold_with_navbar.dart';
+import '../../data/services/auth_service.dart';
+import '../../presentation/screens/admin_dashboard_screen.dart';
+import '../../presentation/screens/feed_screen.dart';
+import '../../presentation/screens/forgot_password_screen.dart';
+import '../../presentation/screens/login_screen.dart';
+import '../../presentation/screens/map_screen.dart';
+import '../../presentation/screens/onboarding_screen.dart';
+import '../../presentation/screens/profile_screen.dart';
+import '../../presentation/screens/register_screen.dart';
+import '../../presentation/screens/report_screen.dart';
+import '../../presentation/widgets/scaffold_with_navbar.dart';
 
 /// A ChangeNotifier that listens to auth and role changes to trigger router refresh
 class AuthNotifier extends ChangeNotifier {
