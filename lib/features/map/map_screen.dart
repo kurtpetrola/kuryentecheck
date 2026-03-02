@@ -79,7 +79,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       final double lngOffset =
                           (random.nextDouble() - 0.5) * 0.004;
 
-                      // Base color on issue type
+                      // Assign marker color and icon based on severity of issue type
                       Color color = Colors.orange;
                       IconData icon = LucideIcons.alertCircle;
                       if (issueType == 'Total Blackout') {
@@ -93,7 +93,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                         icon = LucideIcons.zap;
                       }
 
-                      // If resolved, maybe show green or hide? keeping strictly outage map, maybe grey out resolved
+                      // Visually distinct verified/resolved reports
                       if (status == 'Resolved') {
                         color = Colors.green;
                       }
@@ -139,6 +139,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
                       );
                     }
                   }
+                  // Render all valid markers on the map
                   return MarkerLayer(markers: markers);
                 },
                 loading: () => const MarkerLayer(markers: []),
@@ -195,6 +196,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
     );
   }
 
+  // Displays a bottom sheet with detailed report information when a marker is tapped
   void _showReportDetails(
     BuildContext context,
     String barangay,
@@ -291,6 +293,7 @@ class _MapScreenState extends ConsumerState<MapScreen> {
   }
 }
 
+/// Small colored circle and text for the map legend overlay
 class _LegendItem extends StatelessWidget {
   final Color color;
   final String label;

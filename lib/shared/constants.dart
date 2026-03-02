@@ -1,3 +1,4 @@
+/// General application constant values and static lists
 class Constants {
   static const List<String> barangays = [
     'Alitaya',

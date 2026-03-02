@@ -18,13 +18,19 @@ class RegisterScreen extends ConsumerStatefulWidget {
 }
 
 class _RegisterScreenState extends ConsumerState<RegisterScreen> {
+  // Global key to manage and validate the registration form
   final _formKey = GlobalKey<FormState>();
+
+  // Text controllers for user input fields
   final _nameController = TextEditingController();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
   final _phoneController = TextEditingController();
 
+  // Default selected barangay
   String _selectedBarangay = 'Poblacion';
+
+  // List of all available barangays in the municipality
   final List<String> _barangays = [
     'Alitaya',
     'Amansabina',
@@ -59,6 +65,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
     'Tebag',
   ];
 
+  // State variables for showing loading spinners and error messages
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -72,6 +79,7 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
   }
 
   Future<void> _register() async {
+    // Validate form before processing registration
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -90,9 +98,10 @@ class _RegisterScreenState extends ConsumerState<RegisterScreen> {
             phone: _phoneController.text.trim(),
           );
       if (mounted) {
-        context.go('/report'); // Navigate to home on success
+        context.go('/report'); // Redirect to home on successful registration
       }
     } catch (e) {
+      // Format the error message to be user-friendly
       String msg = e.toString();
       if (e is AppException) {
         msg = e.message;

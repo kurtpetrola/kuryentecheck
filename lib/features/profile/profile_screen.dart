@@ -87,8 +87,10 @@ class ProfileScreen extends ConsumerWidget {
 
                 final data = snapshot.data?.data() as Map<String, dynamic>?;
 
+                // Safely determine display name or fallback
                 final displayName =
                     data?['displayName'] ?? user.displayName ?? 'No Name';
+                // Extract 1-2 letter initials for the avatar placeholder
                 final initials = displayName.isNotEmpty
                     ? displayName
                           .trim()
@@ -246,12 +248,12 @@ class ProfileScreen extends ConsumerWidget {
                                           color: locale.languageCode == 'en'
                                               ? const Color(0xFF0F4C45)
                                               : Colors.transparent,
+                                          // Highlight matching language option visually with border radius
                                           borderRadius: BorderRadius.horizontal(
                                             left: const Radius.circular(7),
                                             right: locale.languageCode == 'en'
                                                 ? const Radius.circular(0)
-                                                : Radius
-                                                      .zero, // logic simplified for border radius visual
+                                                : Radius.zero,
                                           ),
                                         ),
                                         child: Text(
@@ -317,6 +319,7 @@ class ProfileScreen extends ConsumerWidget {
   }
 }
 
+/// Reusable widget to display a labeled icon-value pair in profile section
 class _InfoRow extends StatelessWidget {
   final IconData icon;
   final String label;

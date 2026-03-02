@@ -14,23 +14,27 @@ import 'shared/notification_listener_wrapper.dart';
 import 'shared/router.dart';
 
 void main() async {
+  // Ensure Flutter bindings are initialized before calling async methods
   WidgetsFlutterBinding.ensureInitialized();
 
+  // Load shared preferences early to provide it synchronously later
   final prefs = await SharedPreferences.getInstance();
 
-  // Global Error Handling
+  // Global Error Handling for UI errors
   FlutterError.onError = (FlutterErrorDetails details) {
     FlutterError.presentError(details);
     debugPrint('Flutter Error: ${details.exception}');
     debugPrint('Stacktrace: ${details.stack}');
   };
 
+  // Global Error Handling for unhandled asynchronous errors
   PlatformDispatcher.instance.onError = (error, stack) {
     debugPrint('Async Error: $error');
     debugPrint('Stacktrace: $stack');
     return true; // Handled
   };
 
+  // Initialize Firebase App
   try {
     await Firebase.initializeApp(
       options: DefaultFirebaseOptions.currentPlatform,
@@ -39,9 +43,10 @@ void main() async {
     debugPrint('Firebase initialization failed: $e');
   }
 
-  // Initialize Notifications
+  // Initialize Push Notifications
   await NotificationService().init();
 
+  // Run the app with Riverpod ProviderScope
   runApp(
     ProviderScope(
       overrides: [sharedPreferencesProvider.overrideWithValue(prefs)],
@@ -50,6 +55,7 @@ void main() async {
   );
 }
 
+/// Root widget of the KuryenteCheck application
 class MyApp extends ConsumerWidget {
   const MyApp({super.key});
 
@@ -58,6 +64,7 @@ class MyApp extends ConsumerWidget {
     // Initialize SyncService to listen for connectivity changes
     ref.watch(syncServiceProvider);
 
+    // Watch router provider for named routing
     final router = ref.watch(routerProvider);
 
     return MaterialApp.router(
@@ -79,6 +86,7 @@ class MyApp extends ConsumerWidget {
         textTheme: GoogleFonts.interTextTheme(),
       ),
       routerConfig: router,
+      // Wrap root with NotificationListener to handle deep linking via notifications
       builder: (context, child) =>
           NotificationListenerWrapper(child: child ?? const SizedBox()),
     );

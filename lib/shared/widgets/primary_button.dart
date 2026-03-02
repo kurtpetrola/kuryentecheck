@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// The main themed button widget used throughout the application, supporting a loading state
 class PrimaryButton extends StatelessWidget {
   const PrimaryButton({
     required this.onPressed,

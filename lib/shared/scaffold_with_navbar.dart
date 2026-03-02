@@ -5,6 +5,7 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../services/language_provider.dart';
 import '../shared/app_strings.dart';
 
+/// Main application scaffold with bottom navigation bar used by GoRouter
 class ScaffoldWithNavBar extends ConsumerWidget {
   const ScaffoldWithNavBar({required this.navigationShell, super.key});
 

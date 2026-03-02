@@ -16,8 +16,11 @@ class ForgotPasswordScreen extends ConsumerStatefulWidget {
 }
 
 class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
+  // Controller for the email input field
   final _emailController = TextEditingController();
   final _formKey = GlobalKey<FormState>();
+
+  // State variables for UI feedback
   bool _isLoading = false;
   String? _message;
   bool _isError = false;
@@ -29,6 +32,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
   }
 
   Future<void> _resetPassword() async {
+    // Validate email constraints before sending request
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -47,6 +51,7 @@ class _ForgotPasswordScreenState extends ConsumerState<ForgotPasswordScreen> {
         _emailController.clear();
       });
     } catch (e) {
+      // Simplify internal exceptions into user-readable errors
       String msg = e.toString();
       if (e is AppException) {
         msg = e.message;

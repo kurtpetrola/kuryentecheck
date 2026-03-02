@@ -10,6 +10,7 @@ import '../../shared/widgets/info_chip.dart';
 import '../../shared/widgets/issue_type_card.dart';
 import 'report_controller.dart';
 
+/// Screen for users to submit new community reports (outages, hazards, etc.)
 class ReportScreen extends ConsumerStatefulWidget {
   const ReportScreen({super.key});
 
@@ -41,6 +42,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     super.dispose();
   }
 
+  // Handles report submission and displays appropriate success/error snackbars
   Future<void> _submitReport() async {
     final locale = ref.read(languageProvider);
     final controller = ref.read(reportFormControllerProvider.notifier);
@@ -137,6 +139,7 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
               style: const TextStyle(fontWeight: FontWeight.w600, fontSize: 14),
             ),
             const SizedBox(height: 8),
+            // Visual cards for selecting the type of power issue
             IssueTypeCard(
               key: const Key('issue_blackout'),
               title: AppStrings.tr('report_issue_blackout', locale),

@@ -41,6 +41,7 @@ final authNotifierProvider = Provider<AuthNotifier>((ref) {
 /// Keep navigator key as a constant to prevent router recreation
 final _rootNavigatorKey = GlobalKey<NavigatorState>();
 
+/// Main GoRouter configuration, managing auth state changes and role-based redirects
 final routerProvider = Provider<GoRouter>((ref) {
   final authNotifier = ref.watch(authNotifierProvider);
 
@@ -201,6 +202,7 @@ class _AuthLoadingScreen extends StatelessWidget {
   }
 }
 
+/// Fallback route that redirects users to the home screen
 class _ErrorRedirect extends StatefulWidget {
   const _ErrorRedirect();
 

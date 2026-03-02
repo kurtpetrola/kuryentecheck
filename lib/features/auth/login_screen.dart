@@ -18,9 +18,12 @@ class LoginScreen extends ConsumerStatefulWidget {
 }
 
 class _LoginScreenState extends ConsumerState<LoginScreen> {
+  // Form handling and input controllers
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
+
+  // State variables for loading and error display
   bool _isLoading = false;
   String? _errorMessage;
 
@@ -32,6 +35,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
   }
 
   Future<void> _login() async {
+    // Validate form fields before proceeding
     if (!_formKey.currentState!.validate()) return;
 
     setState(() {
@@ -48,6 +52,7 @@ class _LoginScreenState extends ConsumerState<LoginScreen> {
           );
       // Main redirection is handled by router based on auth state
     } catch (e) {
+      // Clean and format exceptions for user readability
       String msg = e.toString();
       if (e is AppException) {
         msg = e.message;

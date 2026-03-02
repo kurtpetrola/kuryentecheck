@@ -16,7 +16,10 @@ class FeedScreen extends ConsumerStatefulWidget {
 }
 
 class _FeedScreenState extends ConsumerState<FeedScreen> {
+  // Controller for the search input field
   final TextEditingController _searchController = TextEditingController();
+
+  // Current search and filter criteria
   String _searchQuery = '';
   String _filterStatus = 'All';
 
@@ -128,13 +131,13 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 final docs = snapshot.docs.where((doc) {
                   final data = doc.data() as Map<String, dynamic>;
 
-                  // Status Filter
+                  // Apply selected status filter
                   if (_filterStatus != 'All') {
                     final status = data['status'] as String? ?? 'Pending';
                     if (status != _filterStatus) return false;
                   }
 
-                  // Search Filter
+                  // Apply search keywords against barangay, issue type, and notes
                   if (_searchQuery.isEmpty) return true;
                   final barangay = (data['barangay'] as String? ?? '')
                       .toLowerCase();
@@ -159,7 +162,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                     final doc = docs[index];
                     final data = doc.data() as Map<String, dynamic>;
 
-                    // Basic time ago logic
+                    // Calculate human-readable 'time ago' string
                     final timestamp = data['timestamp'] as Timestamp?;
                     String timeAgoStr = AppStrings.tr('time_just_now', locale);
                     if (timestamp != null) {
@@ -245,6 +248,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
   }
 }
 
+/// Reusable card widget for displaying individual feed items
 class _FeedCard extends StatelessWidget {
   final String barangay;
   final String timeAgo;
@@ -255,6 +259,7 @@ class _FeedCard extends StatelessWidget {
   final String status;
   final Color statusColor;
   final int upvotes;
+  // Indicates if the current user has already liked this report
   final bool isLiked;
   final VoidCallback onUpvote;
 

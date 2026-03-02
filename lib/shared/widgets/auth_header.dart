@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:google_fonts/google_fonts.dart';
 
+/// Standardized header widget used across authentication screens
 class AuthHeader extends StatelessWidget {
   const AuthHeader({required this.title, required this.subtitle, super.key});
 

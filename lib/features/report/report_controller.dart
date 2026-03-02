@@ -4,6 +4,7 @@ import '../../services/offline_report_service.dart';
 import '../../services/report_service.dart';
 import '../../shared/exceptions/app_exception.dart';
 
+/// State representation for the report submission form
 class ReportFormState {
   final String? selectedBarangay;
   final String? selectedIssue;
@@ -36,6 +37,7 @@ class ReportFormState {
   }
 }
 
+/// Controller managing the state and submission of community reports
 class ReportFormController extends Notifier<ReportFormState> {
   @override
   ReportFormState build() {
@@ -54,6 +56,7 @@ class ReportFormController extends Notifier<ReportFormState> {
     state = state.copyWith(notes: notes);
   }
 
+  /// Validates and submits the report, handling offline queuing if necessary
   Future<String> submitReport() async {
     if (state.selectedBarangay == null || state.selectedIssue == null) {
       state = state.copyWith(error: 'missing_fields');
