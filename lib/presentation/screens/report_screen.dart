@@ -3,10 +3,10 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
 import 'package:lucide_icons/lucide_icons.dart';
 
+import '../../core/constants/app_constants.dart';
 import '../../core/constants/app_strings.dart';
-import '../../core/constants/constants.dart';
 import '../providers/language_provider.dart';
-import '../providers/report_controller.dart';
+import '../providers/report_provider.dart';
 import '../widgets/info_chip.dart';
 import '../widgets/issue_type_card.dart';
 

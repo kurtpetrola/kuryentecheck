@@ -6,7 +6,7 @@ import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-import 'core/router/router.dart';
+import 'core/router/app_router.dart';
 import 'data/services/notification_service.dart';
 import 'data/services/sync_service.dart';
 import 'firebase_options.dart';
