@@ -6,6 +6,7 @@ import '../services/auth_service.dart';
 import '../services/notification_service.dart';
 import '../services/report_service.dart';
 
+/// Global wrapper widget that listens to report status changes and triggers local notifications
 class NotificationListenerWrapper extends ConsumerStatefulWidget {
   final Widget child;
   const NotificationListenerWrapper({super.key, required this.child});
@@ -99,6 +100,7 @@ class _NotificationListenerWrapperState
     return widget.child;
   }
 
+  /// Builds and displays the local notification based on status change
   void _triggerNotification(String id, String barangay, String newStatus) {
     String title = 'Report Update';
     String body = 'Your report in $barangay is now $newStatus';

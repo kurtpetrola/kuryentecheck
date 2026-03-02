@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A small styled chip widget for displaying icon-text pairs
 class InfoChip extends StatelessWidget {
   final IconData icon;
   final String label;

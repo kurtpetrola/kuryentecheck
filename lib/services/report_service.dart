@@ -12,6 +12,7 @@ final reportStreamProvider = StreamProvider<QuerySnapshot>((ref) {
   return ref.watch(reportServiceProvider).getReports();
 });
 
+/// Service for interacting with the 'reports' collection in Firestore
 class ReportService {
   final FirebaseFirestore _firestore;
   final Ref _ref;
@@ -21,6 +22,7 @@ class ReportService {
   // Collection reference
   CollectionReference get _reports => _firestore.collection('reports');
 
+  /// Submits a new community report to Firestore
   // Submit a new report
   Future<void> addReport({
     required String barangay,
@@ -55,6 +57,7 @@ class ReportService {
     }
   }
 
+  /// Toggles the current user's upvote on a specific report
   // Toggle upvote on a report
   Future<void> toggleUpvote(String reportId) async {
     try {

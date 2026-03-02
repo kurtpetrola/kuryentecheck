@@ -1,3 +1,4 @@
+/// Utility class for mapping exception strings to user-friendly error messages
 class ErrorMessageUtils {
   static String map(Object error) {
     if (error.toString().startsWith('AppException')) {}

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// Centralized localized strings for English and Tagalog translations
 class AppStrings {
   static const Map<String, Map<String, String>> _localizedValues = {
     'en': {

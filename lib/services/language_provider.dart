@@ -10,6 +10,7 @@ final languageProvider = NotifierProvider<LanguageNotifier, Locale>(
   LanguageNotifier.new,
 );
 
+/// Notifier to manage and persist the app's selected language locale
 class LanguageNotifier extends Notifier<Locale> {
   static const _kLanguageKey = 'selected_language';
 

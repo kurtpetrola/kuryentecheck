@@ -1,6 +1,7 @@
 // Coordinates for Mangaldan, Pangasinan Barangays
 // Approximate central points for each barangay
 
+/// Geographic coordinates for mapping reports in Mangaldan barangays
 final Map<String, (double, double)> barangayCoordinates = {
   'Alitaya': (16.075, 120.402),
   'Amansabina': (16.082, 120.395),

@@ -18,11 +18,14 @@ class AdminDashboardScreen extends ConsumerStatefulWidget {
 }
 
 class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
+  // Current active filter for report status
   String _filterStatus = 'Pending';
 
   @override
   Widget build(BuildContext context) {
+    // Stream of all reports from Firestore
     final reportsAsync = ref.watch(reportStreamProvider);
+    // Current application locale for localization
     final locale = ref.watch(languageProvider);
 
     return Scaffold(
@@ -80,7 +83,8 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
       body: reportsAsync.when(
         data: (snapshot) {
           final allDocs = snapshot.docs;
-          // Calculate Stats
+
+          // Calculate counts for each status to display in statistic cards
           final pendingCount = allDocs
               .where((d) => (d.data() as Map)['status'] == 'Pending')
               .length;
@@ -91,6 +95,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
               .where((d) => (d.data() as Map)['status'] == 'Resolved')
               .length;
 
+          // Filter documents based on currently selected tab
           final displayedDocs = allDocs.where((doc) {
             if (_filterStatus == 'All') return true;
             final data = doc.data() as Map<String, dynamic>;
@@ -202,7 +207,11 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                         itemBuilder: (context, index) {
                           final doc = displayedDocs[index];
                           final data = doc.data() as Map<String, dynamic>;
-                          return _AdminReportCard(docId: doc.id, data: data);
+                          return _AdminReportCard(
+                            key: ValueKey(doc.id),
+                            docId: doc.id,
+                            data: data,
+                          );
                         },
                       ),
               ),
@@ -216,6 +225,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
   }
 }
 
+/// A reusable card to display dashboard statistics
 class _StatCard extends StatelessWidget {
   final String label;
   final int count;
@@ -271,6 +281,7 @@ class _StatCard extends StatelessWidget {
   }
 }
 
+/// A selectable tab segment used for filtering items
 class _FilterTab extends StatelessWidget {
   final String label;
   final bool isSelected;
@@ -315,12 +326,14 @@ class _FilterTab extends StatelessWidget {
   }
 }
 
+/// Display card for an individual user report
 class _AdminReportCard extends ConsumerWidget {
   final String docId;
   final Map<String, dynamic> data;
 
-  const _AdminReportCard({required this.docId, required this.data});
+  const _AdminReportCard({required this.docId, required this.data, super.key});
 
+  // Helper method to modify report status directly in Firestore
   Future<void> _updateStatus(WidgetRef ref, String newStatus) async {
     await FirebaseFirestore.instance.collection('reports').doc(docId).update({
       'status': newStatus,

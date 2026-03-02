@@ -3,6 +3,7 @@ import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
+/// Introductory screens explaining app features to new users
 class OnboardingScreen extends StatefulWidget {
   const OnboardingScreen({super.key});
 
@@ -169,6 +170,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
   }
 }
 
+/// Data model for an individual onboarding page
 class OnboardingContent {
   final String title;
   final String description;

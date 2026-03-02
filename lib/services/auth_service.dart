@@ -12,6 +12,7 @@ final authStateProvider = StreamProvider<User?>((ref) {
   return ref.watch(authServiceProvider).authStateChanges;
 });
 
+/// Service handling Firebase Authentication and user document management
 class AuthService {
   final FirebaseAuth _auth;
   final FirebaseFirestore _firestore;
@@ -36,6 +37,7 @@ class AuthService {
     }
   }
 
+  /// Registers a new user and creates their associated Firestore document
   Future<void> createUserWithEmailAndPassword({
     required String email,
     required String password,
@@ -83,6 +85,7 @@ class AuthService {
     }
   }
 
+  /// Sends a password reset email after verifying the user exists in Firestore
   Future<void> sendPasswordResetEmail(String email) async {
     try {
       // Check if user exists in our database first

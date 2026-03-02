@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A styled, selectable card widget for choosing report issue categories
 class IssueTypeCard extends StatelessWidget {
   final String title;
   final String subtitle;

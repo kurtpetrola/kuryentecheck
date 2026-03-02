@@ -1,3 +1,4 @@
+/// Base exception class for all application-specific errors
 class AppException implements Exception {
   final String message;
   final String code;
@@ -9,6 +10,7 @@ class AppException implements Exception {
   String toString() => 'AppException: $message (code: $code)';
 }
 
+/// Exception thrown for authentication-related errors
 class AuthException extends AppException {
   AuthException(
     super.message, {
@@ -17,6 +19,7 @@ class AuthException extends AppException {
   });
 }
 
+/// Exception thrown for general network connectivity issues
 class NetworkException extends AppException {
   NetworkException(
     super.message, {
@@ -25,6 +28,7 @@ class NetworkException extends AppException {
   });
 }
 
+/// Exception thrown for backend server errors
 class ServerException extends AppException {
   ServerException(
     super.message, {
@@ -33,6 +37,7 @@ class ServerException extends AppException {
   });
 }
 
+/// Exception thrown when user input validation fails
 class ValidationException extends AppException {
   ValidationException(super.message, {super.code = 'validation-error'});
 }

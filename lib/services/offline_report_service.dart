@@ -8,18 +8,21 @@ final offlineReportServiceProvider = Provider<OfflineReportService>((ref) {
   return OfflineReportService(prefs);
 });
 
+/// Manages local storage of community reports when the user is offline
 class OfflineReportService {
   static const String _storageKey = 'offline_reports';
   final SharedPreferences _prefs;
 
   OfflineReportService(this._prefs);
 
+  /// Saves a new report to the local queue
   Future<void> saveReport(Map<String, dynamic> reportData) async {
     final List<String> reports = _prefs.getStringList(_storageKey) ?? [];
     reports.add(jsonEncode(reportData));
     await _prefs.setStringList(_storageKey, reports);
   }
 
+  /// Retrieves all currently queued offline reports
   List<Map<String, dynamic>> getQueuedReports() {
     final List<String> reports = _prefs.getStringList(_storageKey) ?? [];
     return reports.map((e) => jsonDecode(e) as Map<String, dynamic>).toList();

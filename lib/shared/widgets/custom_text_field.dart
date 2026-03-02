@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 
+/// A reusable, styled text input field with validation support
 class CustomTextField extends StatelessWidget {
   const CustomTextField({
     required this.controller,

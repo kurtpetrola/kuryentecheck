@@ -8,6 +8,7 @@ final syncServiceProvider = Provider<SyncService>((ref) {
   return SyncService(ref);
 });
 
+/// Background service that monitors connectivity and syncs offline reports
 class SyncService {
   final Ref _ref;
   StreamSubscription? _subscription;
@@ -29,6 +30,7 @@ class SyncService {
     await syncNow();
   }
 
+  /// Attempts to send all queued offline reports to the server
   Future<void> syncNow() async {
     final offlineService = _ref.read(offlineReportServiceProvider);
     final reportService = _ref.read(reportServiceProvider);
