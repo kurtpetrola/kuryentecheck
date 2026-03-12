@@ -30,7 +30,7 @@ class NotificationService {
         );
 
     await _notificationsPlugin.initialize(
-      initializationSettings,
+      settings: initializationSettings,
       onDidReceiveNotificationResponse: (details) {
         // Handle notification tap
       },
@@ -63,6 +63,11 @@ class NotificationService {
       android: androidPlatformChannelSpecifics,
     );
 
-    await _notificationsPlugin.show(id, title, body, platformChannelSpecifics);
+    await _notificationsPlugin.show(
+      id: id,
+      title: title,
+      body: body,
+      notificationDetails: platformChannelSpecifics,
+    );
   }
 }
