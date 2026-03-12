@@ -68,8 +68,8 @@ class ReportFormController extends Notifier<ReportFormState> {
 
     try {
       // Check connectivity
-      final connectivityResult = await Connectivity().checkConnectivity();
-      if (connectivityResult == ConnectivityResult.none) {
+      final List<ConnectivityResult> connectivityResults = await Connectivity().checkConnectivity();
+      if (connectivityResults.contains(ConnectivityResult.none)) {
         // Offline: Queue report
         final reportData = {
           'barangay': state.selectedBarangay,

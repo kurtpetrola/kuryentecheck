@@ -18,8 +18,8 @@ class SyncService {
   }
 
   void _init() {
-    _subscription = Connectivity().onConnectivityChanged.listen((result) {
-      if (result != ConnectivityResult.none) {
+    _subscription = Connectivity().onConnectivityChanged.listen((List<ConnectivityResult> results) {
+      if (results.isNotEmpty && !results.contains(ConnectivityResult.none)) {
         _syncReports();
       }
     });

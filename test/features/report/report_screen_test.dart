@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:flutter_test/flutter_test.dart';
 import 'package:kuryente_check/data/services/report_service.dart';
@@ -21,6 +22,17 @@ void main() {
 
     // Default stubs
     when(mockSharedPreferences.getString(any)).thenReturn(null);
+
+    // Mock Connectivity platform channel
+    TestWidgetsFlutterBinding.ensureInitialized();
+    const channel = MethodChannel('dev.fluttercommunity.plus/connectivity');
+    TestDefaultBinaryMessengerBinding.instance.defaultBinaryMessenger
+        .setMockMethodCallHandler(channel, (MethodCall methodCall) async {
+          if (methodCall.method == 'check') {
+            return ['wifi'];
+          }
+          return null;
+        });
   });
 
   Widget createSubject() {
@@ -46,7 +58,9 @@ void main() {
     await tester.pumpWidget(createSubject());
 
     // Submit without data
-    await tester.tap(find.byKey(const Key('submit_button')));
+    final submitButton = find.byKey(const Key('submit_button'));
+    await tester.ensureVisible(submitButton);
+    await tester.tap(submitButton);
     await tester.pump();
 
     verifyNever(
@@ -85,8 +99,10 @@ void main() {
     await tester.pump();
 
     // Submit
-    await tester.tap(find.byKey(const Key('submit_button')));
-    await tester.pump();
+    final submitButton = find.byKey(const Key('submit_button'));
+    await tester.ensureVisible(submitButton);
+    await tester.tap(submitButton);
+    await tester.pump(const Duration(milliseconds: 500));
 
     verify(
       mockReportService.addReport(
