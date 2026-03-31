@@ -4,7 +4,7 @@
             "android": {
                 "default": {
                     "projectId": "kuryente-check-project",
-                    "appId": "1:243734439592:android:45a352be98c54ba781c49d",
+                    "appId": "1:243734439592:android:170ba278a3c5057581c49d",
                     "fileOutput": "android/app/google-services.json"
                 }
             },
@@ -12,8 +12,8 @@
                 "lib/firebase_options.dart": {
                     "projectId": "kuryente-check-project",
                     "configurations": {
-                        "android": "1:243734439592:android:45a352be98c54ba781c49d",
-                        "ios": "1:243734439592:ios:e9774c4c5724bc0c81c49d"
+                        "android": "1:243734439592:android:170ba278a3c5057581c49d",
+                        "ios": "1:243734439592:ios:0e35775ee1475eee81c49d"
                     }
                 }
             }
