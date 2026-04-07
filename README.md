@@ -1,25 +1,25 @@
-# ✅ KuryenteCheck
+# KuryenteCheck
 
 **KuryenteCheck** is a Crowd-Sourced Mobile App for Monitoring Electricity Outages and Voltage Fluctuations in Mangaldan, Pangasinan.
 
-## ✨ Features
+## Features
 
-### For Residents (Users)
+- For Residents
 
-- **Report Outages**: Easily report issues like "Total Blackout", "Low Voltage", or "Flickering Lights".
-- **Live Map**: View a real-time map of reported outages in your barangay (pinned to Mangaldan, Pangasinan).
-- **Community Feed**: See what's happening in your area with a feed of recent reports.
-- **Real-time Notifications**: Get notified instantly when your report is **Acknowledged** or **Resolved** by an admin.
-- **Profile Management**: Track your submitted reports and toggle between English and Filipino languages.
-- **Offline Reports**: Draft reports offline and sync them when you regain connection.
+  - **Report Outages**: Easily report issues like "Total Blackout", "Low Voltage", or "Flickering Lights".
+  - **Live Map**: View a real-time map of reported outages in your barangay (pinned to Mangaldan, Pangasinan).
+  - **Community Feed**: See what's happening in your area with a feed of recent reports.
+  - **Real-time Notifications**: Get notified instantly when your report is **Acknowledged** or **Resolved** by an admin.
+  - **Profile Management**: Track your submitted reports and toggle between English and Filipino languages.
+  - **Offline Reports**: Draft reports offline and sync them when you regain connection.
 
-### For Admins (CENPELCO)
+- For Admins
 
-- **Command Center**: A dedicated dashboard to view all incoming reports.
-- **Status Management**: Filter reports by status (Pending, Acknowledged, Resolved).
-- **Actionable & Efficient**: Acknowledge valid reports and mark them as resolved once fixed, automatically notifying the affected resident.
+  - **Command Center**: A dedicated dashboard to view all incoming reports.
+  - **Status Management**: Filter reports by status (Pending, Acknowledged, Resolved).
+  - **Status Report**: Acknowledge valid reports and mark them as resolved once fixed, automatically notifying the affected resident.
 
-## 💻 Tech Stack
+## Tech Stack
 
 - **Framework**: [Flutter](https://flutter.dev) (Dart)
 - **State Management**: [Riverpod](https://riverpod.dev)
@@ -32,12 +32,12 @@
 - **Offline Capabilities**: Local caching and sync queues.
 - **Design**: Standardized "Dark Teal" theme (`#0F4C45`) with FontAwesome & Lucide icons.
 
-## 🔐 Roles
+## Roles
 
 - **Resident**: Standard users who can report outages and track their status. Register a new account via the app.
 - **Admin**: Cooperative administrators who process reports.
 
-## 📂 Project Structure
+## Project Structure
 
 The app follows a **strict layered architecture**:
 
