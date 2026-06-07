@@ -2,6 +2,7 @@ import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 
 import '../../core/exceptions/app_exception.dart';
+import '../../core/utils/profanity_filter.dart';
 import '../../data/services/offline_report_service.dart';
 import '../../data/services/report_service.dart';
 
@@ -61,6 +62,11 @@ class ReportFormController extends Notifier<ReportFormState> {
   Future<String> submitReport() async {
     if (state.selectedBarangay == null || state.selectedIssue == null) {
       state = state.copyWith(error: 'missing_fields');
+      return 'error';
+    }
+
+    if (ProfanityFilter.hasProfanity(state.notes)) {
+      state = state.copyWith(error: 'profanity');
       return 'error';
     }
 

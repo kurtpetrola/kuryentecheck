@@ -83,6 +83,7 @@ class AppStrings {
       // Report Screen
       'report_queued_offline': 'Report queued (offline). Will send when online.',
       'report_unknown_error': 'Unknown error',
+      'report_error_profanity': 'Please remove inappropriate language from your report.',
     },
     'tl': {
       'report_issue_title': 'Iulat ang Problema',
@@ -164,6 +165,7 @@ class AppStrings {
       // Report Screen
       'report_queued_offline': 'Naka-queue ang ulat (offline). Ipadadala kapag online na.',
       'report_unknown_error': 'Hindi malamang error',
+      'report_error_profanity': 'Pakialis ang mga hindi angkop na salita sa iyong ulat.',
     },
   };
 

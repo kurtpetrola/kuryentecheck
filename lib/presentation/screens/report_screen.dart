@@ -74,6 +74,8 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
 
       if (error == 'missing_fields') {
         errorMessage = AppStrings.tr('report_snackbar_missing_fields', locale);
+      } else if (error == 'profanity') {
+        errorMessage = AppStrings.tr('report_error_profanity', locale);
       }
 
       ScaffoldMessenger.of(context).showSnackBar(
