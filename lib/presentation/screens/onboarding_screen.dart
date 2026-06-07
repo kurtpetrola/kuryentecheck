@@ -1,36 +1,39 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:go_router/go_router.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import '../../core/constants/app_colors.dart';
+import '../../core/constants/app_strings.dart';
+import '../providers/language_provider.dart';
 
 /// Introductory screens explaining app features to new users
-class OnboardingScreen extends StatefulWidget {
+class OnboardingScreen extends ConsumerStatefulWidget {
   const OnboardingScreen({super.key});
 
   @override
-  State<OnboardingScreen> createState() => _OnboardingScreenState();
+  ConsumerState<OnboardingScreen> createState() => _OnboardingScreenState();
 }
 
-class _OnboardingScreenState extends State<OnboardingScreen> {
+class _OnboardingScreenState extends ConsumerState<OnboardingScreen> {
   final PageController _pageController = PageController();
   int _currentPage = 0;
 
   final List<OnboardingContent> _contents = [
     OnboardingContent(
-      title: 'Report Issues',
-      description: 'Easily report power outages in your area.',
+      title: 'onboarding_title_1',
+      description: 'onboarding_desc_1',
       image: 'assets/images/onboarding_report.png',
     ),
     OnboardingContent(
-      title: 'Track Outages',
-      description: 'View real-time map of affected barangays.',
+      title: 'onboarding_title_2',
+      description: 'onboarding_desc_2',
       image: 'assets/images/onboarding_map.png',
     ),
     OnboardingContent(
-      title: 'Stay Updated',
-      description: 'Get community updates and status changes.',
+      title: 'onboarding_title_3',
+      description: 'onboarding_desc_3',
       image: 'assets/images/onboarding_feed.png',
     ),
   ];
@@ -51,6 +54,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
 
   @override
   Widget build(BuildContext context) {
+    final locale = ref.watch(languageProvider);
+
     return Scaffold(
       backgroundColor: AppColors.white,
       body: SafeArea(
@@ -60,7 +65,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
               alignment: Alignment.topRight,
               child: TextButton(
                 onPressed: _completeOnboarding,
-                child: const Text('Skip'),
+                child: Text(AppStrings.tr('onboarding_skip', locale)),
               ),
             ),
             Expanded(
@@ -86,7 +91,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                           const SizedBox(height: 32),
                           Text(
-                            _contents[index].title,
+                            AppStrings.tr(_contents[index].title, locale),
                             style: GoogleFonts.inter(
                               fontSize: 28,
                               fontWeight: FontWeight.bold,
@@ -96,7 +101,7 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                           ),
                           const SizedBox(height: 16),
                           Text(
-                            _contents[index].description,
+                            AppStrings.tr(_contents[index].description, locale),
                             style: GoogleFonts.inter(
                               fontSize: 16,
                               color: AppColors.grey600,
@@ -158,8 +163,8 @@ class _OnboardingScreenState extends State<OnboardingScreen> {
                     ),
                     child: Text(
                       _currentPage == _contents.length - 1
-                          ? 'Get Started'
-                          : 'Next',
+                          ? AppStrings.tr('onboarding_get_started', locale)
+                          : AppStrings.tr('onboarding_next', locale),
                     ),
                   ),
                 ],

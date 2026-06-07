@@ -84,21 +84,21 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                   },
                   itemBuilder: (BuildContext context) =>
                       <PopupMenuEntry<String>>[
-                        const PopupMenuItem<String>(
+                        PopupMenuItem<String>(
                           value: 'All',
-                          child: Text('All Status'),
+                          child: Text(AppStrings.tr('feed_all_status', locale)),
                         ),
-                        const PopupMenuItem<String>(
+                        PopupMenuItem<String>(
                           value: 'Pending',
-                          child: Text('Pending'),
+                          child: Text(AppStrings.tr('status_pending', locale)),
                         ),
-                        const PopupMenuItem<String>(
+                        PopupMenuItem<String>(
                           value: 'Acknowledged',
-                          child: Text('Acknowledged'),
+                          child: Text(AppStrings.tr('status_acknowledged', locale)),
                         ),
-                        const PopupMenuItem<String>(
+                        PopupMenuItem<String>(
                           value: 'Resolved',
-                          child: Text('Resolved'),
+                          child: Text(AppStrings.tr('status_resolved', locale)),
                         ),
                       ],
                   child: Container(
@@ -240,7 +240,7 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('Error: $err')),
+              error: (err, stack) => Center(child: Text('${AppStrings.tr('error_prefix', locale)} $err')),
             ),
           ),
         ],

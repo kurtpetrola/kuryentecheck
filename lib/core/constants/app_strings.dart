@@ -53,6 +53,34 @@ class AppStrings {
       'map_legend_low_voltage': 'Low Voltage',
       'map_legend_flickering': 'Flickering',
       'map_notes': 'Notes:',
+      // Admin Dashboard
+      'admin_title': 'Command Center',
+      'admin_active': 'Active',
+      'admin_fixed': 'Fixed',
+      'admin_pending_issues': 'Pending Issues',
+      'admin_all_reports': 'All Reports',
+      'admin_no_reports': 'No reports for',
+      'admin_dispatch': 'Dispatch',
+      'admin_resolve': 'Resolve',
+      'error_prefix': 'Error:',
+      // Feed Screen
+      'feed_all_status': 'All Status',
+      // Onboarding Screen
+      'onboarding_skip': 'Skip',
+      'onboarding_title_1': 'Report Issues',
+      'onboarding_desc_1': 'Easily report power outages in your area.',
+      'onboarding_title_2': 'Track Outages',
+      'onboarding_desc_2': 'View real-time map of affected barangays.',
+      'onboarding_title_3': 'Stay Updated',
+      'onboarding_desc_3': 'Get community updates and status changes.',
+      'onboarding_get_started': 'Get Started',
+      'onboarding_next': 'Next',
+      // Profile Screen
+      'profile_not_logged_in': 'Not logged in',
+      'profile_error': 'Something went wrong',
+      // Report Screen
+      'report_queued_offline': 'Report queued (offline). Will send when online.',
+      'report_unknown_error': 'Unknown error',
     },
     'tl': {
       'report_issue_title': 'Iulat ang Problema',
@@ -104,6 +132,34 @@ class AppStrings {
       'map_legend_low_voltage': 'Low Voltage',
       'map_legend_flickering': 'Flickering',
       'map_notes': 'Tala:',
+      // Admin Dashboard
+      'admin_title': 'Sentrong Pangangasiwa',
+      'admin_active': 'Aktibo',
+      'admin_fixed': 'Ayos Na',
+      'admin_pending_issues': 'Mga Pending',
+      'admin_all_reports': 'Lahat ng Ulat',
+      'admin_no_reports': 'Walang ulat para sa',
+      'admin_dispatch': 'Ipadala',
+      'admin_resolve': 'Ayusin',
+      'error_prefix': 'Error:',
+      // Feed Screen
+      'feed_all_status': 'Lahat ng Status',
+      // Onboarding Screen
+      'onboarding_skip': 'Laktawan',
+      'onboarding_title_1': 'Mag-ulat ng Problema',
+      'onboarding_desc_1': 'Madaling mag-ulat ng brownout sa inyong lugar.',
+      'onboarding_title_2': 'Sundan ang mga Brownout',
+      'onboarding_desc_2': 'Tingnan ang real-time na mapa ng mga apektadong barangay.',
+      'onboarding_title_3': 'Maging Update',
+      'onboarding_desc_3': 'Makakuha ng mga update mula sa komunidad.',
+      'onboarding_get_started': 'Magsimula',
+      'onboarding_next': 'Susunod',
+      // Profile Screen
+      'profile_not_logged_in': 'Hindi naka-log in',
+      'profile_error': 'May nangyaring mali',
+      // Report Screen
+      'report_queued_offline': 'Naka-queue ang ulat (offline). Ipadadala kapag online na.',
+      'report_unknown_error': 'Hindi malamang error',
     },
   };
 

@@ -63,14 +63,14 @@ class _ReportScreenState extends ConsumerState<ReportScreen> {
     } else if (result == 'queued') {
       _notesController.clear();
       ScaffoldMessenger.of(context).showSnackBar(
-        const SnackBar(
-          content: Text('Report queued (offline). Will send when online.'),
+        SnackBar(
+          content: Text(AppStrings.tr('report_queued_offline', locale)),
           backgroundColor: AppColors.warning,
         ),
       );
     } else {
       final error = ref.read(reportFormControllerProvider).error;
-      String errorMessage = error ?? 'Unknown error';
+      String errorMessage = error ?? AppStrings.tr('report_unknown_error', locale);
 
       if (error == 'missing_fields') {
         errorMessage = AppStrings.tr('report_snackbar_missing_fields', locale);

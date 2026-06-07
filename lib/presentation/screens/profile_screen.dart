@@ -72,7 +72,7 @@ class ProfileScreen extends ConsumerWidget {
         ],
       ),
       body: user == null
-          ? const Center(child: Text('Not logged in'))
+          ? Center(child: Text(AppStrings.tr('profile_not_logged_in', locale)))
           : StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('users')
@@ -80,7 +80,7 @@ class ProfileScreen extends ConsumerWidget {
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return const Center(child: Text('Something went wrong'));
+                  return Center(child: Text(AppStrings.tr('profile_error', locale)));
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {

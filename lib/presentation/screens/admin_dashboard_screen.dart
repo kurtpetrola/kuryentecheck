@@ -32,9 +32,9 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     return Scaffold(
       backgroundColor: AppColors.grey50,
       appBar: AppBar(
-        title: const Text(
-          'Command Center',
-          style: TextStyle(fontWeight: FontWeight.bold),
+        title: Text(
+          AppStrings.tr('admin_title', locale),
+          style: const TextStyle(fontWeight: FontWeight.bold),
         ),
         centerTitle: false,
         elevation: 0,
@@ -115,7 +115,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                       children: [
                         Expanded(
                           child: _StatCard(
-                            label: 'Pending',
+                            label: AppStrings.tr('status_pending', locale),
                             count: pendingCount,
                             color: AppColors.warning,
                             icon: LucideIcons.alertCircle,
@@ -124,7 +124,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: _StatCard(
-                            label: 'Active',
+                            label: AppStrings.tr('admin_active', locale),
                             count: ackCount,
                             color: AppColors.info,
                             icon: LucideIcons.hammer,
@@ -133,7 +133,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                         const SizedBox(width: 8),
                         Expanded(
                           child: _StatCard(
-                            label: 'Fixed',
+                            label: AppStrings.tr('admin_fixed', locale),
                             count: resolvedCount,
                             color: AppColors.success,
                             icon: LucideIcons.checkCircle,
@@ -149,25 +149,25 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                         scrollDirection: Axis.horizontal,
                         children: [
                           _FilterTab(
-                            label: 'Pending Issues',
+                            label: AppStrings.tr('admin_pending_issues', locale),
                             isSelected: _filterStatus == 'Pending',
                             onTap: () =>
                                 setState(() => _filterStatus = 'Pending'),
                           ),
                           _FilterTab(
-                            label: 'Acknowledged',
+                            label: AppStrings.tr('status_acknowledged', locale),
                             isSelected: _filterStatus == 'Acknowledged',
                             onTap: () =>
                                 setState(() => _filterStatus = 'Acknowledged'),
                           ),
                           _FilterTab(
-                            label: 'Resolved',
+                            label: AppStrings.tr('status_resolved', locale),
                             isSelected: _filterStatus == 'Resolved',
                             onTap: () =>
                                 setState(() => _filterStatus = 'Resolved'),
                           ),
                           _FilterTab(
-                            label: 'All Reports',
+                            label: AppStrings.tr('admin_all_reports', locale),
                             isSelected: _filterStatus == 'All',
                             onTap: () => setState(() => _filterStatus = 'All'),
                           ),
@@ -194,7 +194,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
                             ),
                             const SizedBox(height: 16),
                             Text(
-                              'No $_filterStatus reports',
+                              '${AppStrings.tr('admin_no_reports', locale)} $_filterStatus',
                               style: const TextStyle(color: AppColors.grey500),
                             ),
                           ],
@@ -220,7 +220,7 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, s) => Center(child: Text('Error: $e')),
+        error: (e, s) => Center(child: Text('${AppStrings.tr('error_prefix', locale)} $e')),
       ),
     );
   }
@@ -343,6 +343,7 @@ class _AdminReportCard extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final locale = ref.watch(languageProvider);
     final status = data['status'] ?? 'Pending';
     final issueType = data['issueType'] ?? 'Unknown';
     final barangay = data['barangay'] ?? 'Unknown';
@@ -500,9 +501,9 @@ class _AdminReportCard extends ConsumerWidget {
                         child: TextButton.icon(
                           onPressed: () => _updateStatus(ref, 'Acknowledged'),
                           icon: const Icon(LucideIcons.hardHat, size: 14),
-                          label: const Text(
-                            'Dispatch',
-                            style: TextStyle(fontSize: 12),
+                          label: Text(
+                            AppStrings.tr('admin_dispatch', locale),
+                            style: const TextStyle(fontSize: 12),
                           ),
                           style: TextButton.styleFrom(
                             foregroundColor: AppColors.info,
@@ -517,9 +518,9 @@ class _AdminReportCard extends ConsumerWidget {
                         child: ElevatedButton.icon(
                           onPressed: () => _updateStatus(ref, 'Resolved'),
                           icon: const Icon(LucideIcons.check, size: 14),
-                          label: const Text(
-                            'Resolve',
-                            style: TextStyle(fontSize: 12),
+                          label: Text(
+                            AppStrings.tr('admin_resolve', locale),
+                            style: const TextStyle(fontSize: 12),
                           ),
                           style: ElevatedButton.styleFrom(
                             backgroundColor: AppColors.success,
