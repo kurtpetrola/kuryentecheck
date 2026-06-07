@@ -11,6 +11,7 @@ import '../../data/services/report_service.dart';
 import '../../data/services/sync_service.dart';
 import '../providers/language_provider.dart';
 import '../widgets/error_view.dart';
+import '../widgets/feed_card.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -40,7 +41,8 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     final locale = ref.watch(languageProvider);
 
     final connectivityAsync = ref.watch(connectivityStreamProvider);
-    final isOffline = connectivityAsync.value?.contains(ConnectivityResult.none) ?? false;
+    final isOffline =
+        connectivityAsync.value?.contains(ConnectivityResult.none) ?? false;
 
     return Scaffold(
       appBar: AppBar(
@@ -100,7 +102,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                         ),
                         PopupMenuItem<String>(
                           value: 'Acknowledged',
-                          child: Text(AppStrings.tr('status_acknowledged', locale)),
+                          child: Text(
+                            AppStrings.tr('status_acknowledged', locale),
+                          ),
                         ),
                         PopupMenuItem<String>(
                           value: 'Resolved',
@@ -133,257 +137,139 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             ),
           ),
           Expanded(
-            child: isOffline 
+            child: isOffline
                 ? ErrorView(message: AppStrings.tr('error_offline', locale))
                 : reportsAsync.when(
-              data: (snapshot) {
-                final docs = snapshot.docs.where((doc) {
-                  final data = doc.data() as Map<String, dynamic>;
+                    data: (snapshot) {
+                      final docs = snapshot.docs.where((doc) {
+                        final data = doc.data() as Map<String, dynamic>;
 
-                  // Apply selected status filter
-                  if (_filterStatus != 'All') {
-                    final status = data['status'] as String? ?? 'Pending';
-                    if (status != _filterStatus) return false;
-                  }
+                        // Apply selected status filter
+                        if (_filterStatus != 'All') {
+                          final status = data['status'] as String? ?? 'Pending';
+                          if (status != _filterStatus) return false;
+                        }
 
-                  // Apply search keywords against barangay, issue type, and notes
-                  if (_searchQuery.isEmpty) return true;
-                  final barangay = (data['barangay'] as String? ?? '')
-                      .toLowerCase();
-                  final issueType = (data['issueType'] as String? ?? '')
-                      .toLowerCase();
-                  final notes = (data['notes'] as String? ?? '').toLowerCase();
+                        // Apply search keywords against barangay, issue type, and notes
+                        if (_searchQuery.isEmpty) return true;
+                        final barangay = (data['barangay'] as String? ?? '')
+                            .toLowerCase();
+                        final issueType = (data['issueType'] as String? ?? '')
+                            .toLowerCase();
+                        final notes = (data['notes'] as String? ?? '')
+                            .toLowerCase();
 
-                  return barangay.contains(_searchQuery) ||
-                      issueType.contains(_searchQuery) ||
-                      notes.contains(_searchQuery);
-                }).toList();
+                        return barangay.contains(_searchQuery) ||
+                            issueType.contains(_searchQuery) ||
+                            notes.contains(_searchQuery);
+                      }).toList();
 
-                if (docs.isEmpty) {
-                  return Center(
-                    child: Text(AppStrings.tr('feed_no_reports', locale)),
-                  );
-                }
-                return ListView.builder(
-                  padding: const EdgeInsets.symmetric(horizontal: 16),
-                  itemCount: docs.length,
-                  itemBuilder: (context, index) {
-                    final doc = docs[index];
-                    final data = doc.data() as Map<String, dynamic>;
-
-                    // Calculate human-readable 'time ago' string
-                    final timestamp = data['timestamp'] as Timestamp?;
-                    String timeAgoStr = AppStrings.tr('time_just_now', locale);
-                    if (timestamp != null) {
-                      final diff = DateTime.now().difference(
-                        timestamp.toDate(),
-                      );
-                      if (diff.inMinutes < 60) {
-                        timeAgoStr =
-                            '${diff.inMinutes}${AppStrings.tr('time_m_ago', locale)}';
-                      } else if (diff.inHours < 24) {
-                        timeAgoStr =
-                            '${diff.inHours}${AppStrings.tr('time_h_ago', locale)}';
-                      } else {
-                        timeAgoStr =
-                            '${diff.inDays}${AppStrings.tr('time_d_ago', locale)}';
+                      if (docs.isEmpty) {
+                        return Center(
+                          child: Text(AppStrings.tr('feed_no_reports', locale)),
+                        );
                       }
-                    }
+                      return ListView.builder(
+                        padding: const EdgeInsets.symmetric(horizontal: 16),
+                        itemCount: docs.length,
+                        itemBuilder: (context, index) {
+                          final doc = docs[index];
+                          final data = doc.data() as Map<String, dynamic>;
 
-                    // Map issue type to icon and color
-                    IconData icon = LucideIcons.alertCircle;
-                    Color color = AppColors.grey;
+                          // Calculate human-readable 'time ago' string
+                          final timestamp = data['timestamp'] as Timestamp?;
+                          String timeAgoStr = AppStrings.tr(
+                            'time_just_now',
+                            locale,
+                          );
+                          if (timestamp != null) {
+                            final diff = DateTime.now().difference(
+                              timestamp.toDate(),
+                            );
+                            if (diff.inMinutes < 60) {
+                              timeAgoStr =
+                                  '${diff.inMinutes}${AppStrings.tr('time_m_ago', locale)}';
+                            } else if (diff.inHours < 24) {
+                              timeAgoStr =
+                                  '${diff.inHours}${AppStrings.tr('time_h_ago', locale)}';
+                            } else {
+                              timeAgoStr =
+                                  '${diff.inDays}${AppStrings.tr('time_d_ago', locale)}';
+                            }
+                          }
 
-                    final issueType = data['issueType'] as String? ?? 'Unknown';
+                          // Map issue type to icon and color
+                          IconData icon = LucideIcons.alertCircle;
+                          Color color = AppColors.grey;
 
-                    if (issueType == 'Total Blackout') {
-                      icon = LucideIcons.zapOff;
-                      color = AppColors.error;
-                    } else if (issueType == 'Low Voltage') {
-                      icon = LucideIcons.activity;
-                      color = AppColors.warning;
-                    } else if (issueType == 'Flickering Lights') {
-                      icon = LucideIcons.zap;
-                      color = AppColors.amber;
-                    }
+                          final issueType =
+                              data['issueType'] as String? ?? 'Unknown';
 
-                    final likedBy = List<String>.from(data['likedBy'] ?? []);
-                    final isLiked =
-                        currentUser != null &&
-                        likedBy.contains(currentUser.uid);
+                          if (issueType == 'Total Blackout') {
+                            icon = LucideIcons.zapOff;
+                            color = AppColors.error;
+                          } else if (issueType == 'Low Voltage') {
+                            icon = LucideIcons.activity;
+                            color = AppColors.warning;
+                          } else if (issueType == 'Flickering Lights') {
+                            icon = LucideIcons.zap;
+                            color = AppColors.amber;
+                          }
 
-                    String status = data['status'] ?? 'Pending';
-                    if (status == 'Pending') {
-                      status = AppStrings.tr('status_pending', locale);
-                    } else if (status == 'Acknowledged') {
-                      status = AppStrings.tr('status_acknowledged', locale);
-                    } else if (status == 'Resolved') {
-                      status = AppStrings.tr('status_resolved', locale);
-                    }
+                          final likedBy = List<String>.from(
+                            data['likedBy'] ?? [],
+                          );
+                          final isLiked =
+                              currentUser != null &&
+                              likedBy.contains(currentUser.uid);
 
-                    return Padding(
-                      padding: const EdgeInsets.only(bottom: 16),
-                      child: _FeedCard(
-                        barangay: data['barangay'] ?? 'Unknown',
-                        timeAgo: timeAgoStr,
-                        issueTitle: issueType,
-                        issueIcon: icon,
-                        issueColor: color,
-                        description:
-                            data['notes'] ?? 'No description provided.',
-                        status: status,
-                        statusColor: (data['status'] == 'Resolved')
-                            ? AppColors.success
-                            : ((data['status'] == 'Acknowledged')
-                                  ? AppColors.info
-                                  : AppColors.warning),
-                        upvotes: data['upvotes'] ?? 0,
-                        isLiked: isLiked,
-                        onUpvote: () {
-                          ref.read(reportServiceProvider).toggleUpvote(doc.id);
+                          String status = data['status'] ?? 'Pending';
+                          if (status == 'Pending') {
+                            status = AppStrings.tr('status_pending', locale);
+                          } else if (status == 'Acknowledged') {
+                            status = AppStrings.tr(
+                              'status_acknowledged',
+                              locale,
+                            );
+                          } else if (status == 'Resolved') {
+                            status = AppStrings.tr('status_resolved', locale);
+                          }
+
+                          return Padding(
+                            padding: const EdgeInsets.only(bottom: 16),
+                            child: FeedCard(
+                              barangay: data['barangay'] ?? 'Unknown',
+                              timeAgo: timeAgoStr,
+                              issueTitle: issueType,
+                              issueIcon: icon,
+                              issueColor: color,
+                              description:
+                                  data['notes'] ?? 'No description provided.',
+                              status: status,
+                              statusColor: (data['status'] == 'Resolved')
+                                  ? AppColors.success
+                                  : ((data['status'] == 'Acknowledged')
+                                        ? AppColors.info
+                                        : AppColors.warning),
+                              upvotes: data['upvotes'] ?? 0,
+                              isLiked: isLiked,
+                              onUpvote: () {
+                                ref
+                                    .read(reportServiceProvider)
+                                    .toggleUpvote(doc.id);
+                              },
+                            ),
+                          );
                         },
-                      ),
-                    );
-                  },
-                );
-              },
-              loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => ErrorView(
-                message: '${AppStrings.tr('error_prefix', locale)} $err',
-                onRetry: () => ref.invalidate(reportStreamProvider),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-}
-
-/// Reusable card widget for displaying individual feed items
-class _FeedCard extends StatelessWidget {
-  final String barangay;
-  final String timeAgo;
-  final String issueTitle;
-  final IconData issueIcon;
-  final Color issueColor;
-  final String description;
-  final String status;
-  final Color statusColor;
-  final int upvotes;
-  // Indicates if the current user has already liked this report
-  final bool isLiked;
-  final VoidCallback onUpvote;
-
-  const _FeedCard({
-    required this.barangay,
-    required this.timeAgo,
-    required this.issueTitle,
-    required this.issueIcon,
-    required this.issueColor,
-    required this.description,
-    required this.status,
-    required this.statusColor,
-    required this.upvotes,
-    required this.isLiked,
-    required this.onUpvote,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return Container(
-      padding: const EdgeInsets.all(16),
-      decoration: BoxDecoration(
-        color: AppColors.white,
-        border: Border.all(color: AppColors.grey200),
-        borderRadius: BorderRadius.circular(12),
-      ),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(horizontal: 8, vertical: 4),
-                decoration: BoxDecoration(
-                  color: AppColors.grey200,
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: Text(
-                  barangay,
-                  style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              Text(
-                timeAgo,
-                style: const TextStyle(color: AppColors.grey, fontSize: 12),
-              ),
-            ],
-          ),
-          const SizedBox(height: 12),
-          Row(
-            children: [
-              Icon(issueIcon, size: 20, color: issueColor),
-              const SizedBox(width: 8),
-              Text(
-                issueTitle,
-                style: const TextStyle(
-                  fontWeight: FontWeight.bold,
-                  fontSize: 16,
-                ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 8),
-          Text(description, style: const TextStyle(color: AppColors.black87)),
-          const SizedBox(height: 16),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: [
-              Container(
-                padding: const EdgeInsets.symmetric(
-                  horizontal: 12,
-                  vertical: 6,
-                ),
-                decoration: BoxDecoration(
-                  color: statusColor.withValues(alpha: 0.1),
-                  borderRadius: BorderRadius.circular(16),
-                ),
-                child: Text(
-                  status,
-                  style: TextStyle(
-                    color: statusColor,
-                    fontWeight: FontWeight.bold,
-                    fontSize: 12,
-                  ),
-                ),
-              ),
-              GestureDetector(
-                onTap: onUpvote,
-                behavior: HitTestBehavior.opaque,
-                child: Row(
-                  children: [
-                    Icon(
-                      LucideIcons.thumbsUp,
-                      size: 20,
-                      color: isLiked ? AppColors.primary : AppColors.grey,
+                      );
+                    },
+                    loading: () =>
+                        const Center(child: CircularProgressIndicator()),
+                    error: (err, stack) => ErrorView(
+                      message: '${AppStrings.tr('error_prefix', locale)} $err',
+                      onRetry: () => ref.invalidate(reportStreamProvider),
                     ),
-                    const SizedBox(width: 4),
-                    Text(
-                      upvotes.toString(),
-                      style: TextStyle(
-                        color: isLiked ? AppColors.primary : AppColors.grey,
-                        fontWeight: FontWeight.bold,
-                      ),
-                    ),
-                  ],
-                ),
-              ),
-            ],
+                  ),
           ),
         ],
       ),
