@@ -63,6 +63,8 @@ class AppStrings {
       'admin_dispatch': 'Dispatch',
       'admin_resolve': 'Resolve',
       'error_prefix': 'Error:',
+      'error_retry': 'Retry',
+      'error_offline': 'No Internet Connection',
       // Feed Screen
       'feed_all_status': 'All Status',
       // Onboarding Screen
@@ -142,6 +144,8 @@ class AppStrings {
       'admin_dispatch': 'Ipadala',
       'admin_resolve': 'Ayusin',
       'error_prefix': 'Error:',
+      'error_retry': 'Ulitin',
+      'error_offline': 'Walang Internet Connection',
       // Feed Screen
       'feed_all_status': 'Lahat ng Status',
       // Onboarding Screen

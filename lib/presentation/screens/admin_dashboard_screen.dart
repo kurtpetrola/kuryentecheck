@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:intl/intl.dart';
@@ -8,7 +9,9 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../data/services/auth_service.dart';
 import '../../data/services/report_service.dart';
+import '../../data/services/sync_service.dart';
 import '../providers/language_provider.dart';
+import '../widgets/error_view.dart';
 
 class AdminDashboardScreen extends ConsumerStatefulWidget {
   const AdminDashboardScreen({super.key});
@@ -28,6 +31,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
     final reportsAsync = ref.watch(reportStreamProvider);
     // Current application locale for localization
     final locale = ref.watch(languageProvider);
+
+    // Watch connectivity
+    final connectivityAsync = ref.watch(connectivityStreamProvider);
+    final isOffline = connectivityAsync.value?.contains(ConnectivityResult.none) ?? false;
 
     return Scaffold(
       backgroundColor: AppColors.grey50,
@@ -81,7 +88,11 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           ),
         ],
       ),
-      body: reportsAsync.when(
+      body: isOffline 
+        ? ErrorView(
+            message: AppStrings.tr('error_offline', locale),
+          )
+        : reportsAsync.when(
         data: (snapshot) {
           final allDocs = snapshot.docs;
 
@@ -220,7 +231,10 @@ class _AdminDashboardScreenState extends ConsumerState<AdminDashboardScreen> {
           );
         },
         loading: () => const Center(child: CircularProgressIndicator()),
-        error: (e, s) => Center(child: Text('${AppStrings.tr('error_prefix', locale)} $e')),
+        error: (e, s) => ErrorView(
+          message: '${AppStrings.tr('error_prefix', locale)} $e',
+          onRetry: () => ref.invalidate(reportStreamProvider),
+        ),
       ),
     );
   }

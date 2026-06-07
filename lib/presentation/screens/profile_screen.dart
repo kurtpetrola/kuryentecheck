@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -6,7 +7,9 @@ import 'package:lucide_icons/lucide_icons.dart';
 import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../data/services/auth_service.dart';
+import '../../data/services/sync_service.dart';
 import '../providers/language_provider.dart';
+import '../widgets/error_view.dart';
 
 class ProfileScreen extends ConsumerWidget {
   const ProfileScreen({super.key});
@@ -16,6 +19,9 @@ class ProfileScreen extends ConsumerWidget {
     final authState = ref.watch(authStateProvider);
     final user = authState.value;
     final locale = ref.watch(languageProvider);
+
+    final connectivityAsync = ref.watch(connectivityStreamProvider);
+    final isOffline = connectivityAsync.value?.contains(ConnectivityResult.none) ?? false;
 
     return Scaffold(
       backgroundColor: AppColors.grey50,
@@ -71,16 +77,18 @@ class ProfileScreen extends ConsumerWidget {
           ),
         ],
       ),
-      body: user == null
-          ? Center(child: Text(AppStrings.tr('profile_not_logged_in', locale)))
-          : StreamBuilder<DocumentSnapshot>(
+      body: isOffline
+          ? ErrorView(message: AppStrings.tr('error_offline', locale))
+          : user == null
+              ? Center(child: Text(AppStrings.tr('profile_not_logged_in', locale)))
+              : StreamBuilder<DocumentSnapshot>(
               stream: FirebaseFirestore.instance
                   .collection('users')
                   .doc(user.uid)
                   .snapshots(),
               builder: (context, snapshot) {
                 if (snapshot.hasError) {
-                  return Center(child: Text(AppStrings.tr('profile_error', locale)));
+                  return ErrorView(message: AppStrings.tr('profile_error', locale));
                 }
 
                 if (snapshot.connectionState == ConnectionState.waiting) {

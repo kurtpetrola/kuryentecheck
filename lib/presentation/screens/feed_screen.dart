@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:connectivity_plus/connectivity_plus.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:lucide_icons/lucide_icons.dart';
@@ -7,7 +8,9 @@ import '../../core/constants/app_colors.dart';
 import '../../core/constants/app_strings.dart';
 import '../../data/services/auth_service.dart';
 import '../../data/services/report_service.dart';
+import '../../data/services/sync_service.dart';
 import '../providers/language_provider.dart';
+import '../widgets/error_view.dart';
 
 class FeedScreen extends ConsumerStatefulWidget {
   const FeedScreen({super.key});
@@ -35,6 +38,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
     final reportsAsync = ref.watch(reportStreamProvider);
     final currentUser = ref.watch(authServiceProvider).currentUser;
     final locale = ref.watch(languageProvider);
+
+    final connectivityAsync = ref.watch(connectivityStreamProvider);
+    final isOffline = connectivityAsync.value?.contains(ConnectivityResult.none) ?? false;
 
     return Scaffold(
       appBar: AppBar(
@@ -127,7 +133,9 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
             ),
           ),
           Expanded(
-            child: reportsAsync.when(
+            child: isOffline 
+                ? ErrorView(message: AppStrings.tr('error_offline', locale))
+                : reportsAsync.when(
               data: (snapshot) {
                 final docs = snapshot.docs.where((doc) {
                   final data = doc.data() as Map<String, dynamic>;
@@ -240,7 +248,10 @@ class _FeedScreenState extends ConsumerState<FeedScreen> {
                 );
               },
               loading: () => const Center(child: CircularProgressIndicator()),
-              error: (err, stack) => Center(child: Text('${AppStrings.tr('error_prefix', locale)} $err')),
+              error: (err, stack) => ErrorView(
+                message: '${AppStrings.tr('error_prefix', locale)} $err',
+                onRetry: () => ref.invalidate(reportStreamProvider),
+              ),
             ),
           ),
         ],

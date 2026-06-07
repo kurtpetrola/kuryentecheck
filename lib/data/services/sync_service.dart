@@ -8,6 +8,10 @@ final syncServiceProvider = Provider<SyncService>((ref) {
   return SyncService(ref);
 });
 
+final connectivityStreamProvider = StreamProvider<List<ConnectivityResult>>((ref) {
+  return Connectivity().onConnectivityChanged;
+});
+
 /// Background service that monitors connectivity and syncs offline reports
 class SyncService {
   final Ref _ref;
